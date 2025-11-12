@@ -1,0 +1,51 @@
+// src/assets/styles/main.scss
+@use './variables';
+
+
+a,
+.green {
+  text-decoration: none;
+  color: variables.$red;
+  transition: 0.4s;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem .8rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: "Cal Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: .9rem;
+  color: variables.$gray-03;
+
+
+  .icon {
+    margin-right: 0.8rem;
+    font-size: 1.1rem;
+  }
+
+  // Variants
+  &.btn__primary {
+    color: variables.$white;
+    background: variables.$red;
+  }
+
+    &.btn__secondary {
+      color: variables.$gray-02;
+      background: variables.$gray-07;
+    }
+
+  &:hover {
+    background-color: variables.$red-soft;
+    color: variables.$red;
+  }
+
+  &.active {
+    background: variables.$red;
+    color: variables.$white;
+  }
+}
