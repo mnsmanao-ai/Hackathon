@@ -3,6 +3,7 @@
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useProspectsStore } from '@/store/prospectsStore.js'
+import { getContacts } from '@/api/contacts.js';
 
 const router = useRouter()
 const prospectsStore = useProspectsStore()
@@ -26,7 +27,7 @@ function goToDetail(id) {
 
         <button class="btn btn__secondary">
           Ajouter un prospect</button>
-        <button class="btn btn__primary">
+        <button class="btn btn__primary" @click="getContacts">
           Scorer</button>
       </div>
     </header>
