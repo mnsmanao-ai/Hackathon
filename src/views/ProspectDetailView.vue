@@ -7,7 +7,8 @@
       </div>
 
       <div class="prospects__cta">
-        <button class="btn" @click="router.push('/prospects')">← Retour</button>
+        <button class="btn btn__secondary" @click="router.push('/prospects')">← Retour</button>
+        <button class="btn btn__primary" @click="">Scorer</button>
       </div>
     </header>
 
@@ -79,6 +80,11 @@ const prospect = store.getProspectById(id)
       color: variables.$gray-04;
       margin-top: 0.3rem;
       font-size: 0.95rem;
+    }
+
+    .prospects__cta {
+      display: flex;
+      gap: 0.8rem;
     }
   }
 

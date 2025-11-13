@@ -45,41 +45,20 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/store/authStore'
+
+const router = useRouter()
+const auth = useAuthStore()
 
 const email = ref('')
 const password = ref('')
-const loading = ref(false)
-const errorMessage = ref('')
-const router = useRouter()
+const error = ref('')
 
 const handleLogin = async () => {
-  loading.value = true
-  errorMessage.value = ''
-
-  try {
-    // 🔗 Appel de ton API Backend (exemple)
-    const response = await axios.post('https://api.burostock.fr/auth/login', {
-      email: email.value,
-      password: password.value
-    })
-
-    // Exemple de réponse : { token: "...", user: { name: "..." } }
-    localStorage.setItem('token', response.data.token)
-    localStorage.setItem('user', JSON.stringify(response.data.user))
-
-    // Redirection après connexion réussie
-    router.push('/')
-  } catch (err) {
-    if (err.response?.status === 401) {
-      errorMessage.value = 'Identifiants invalides.'
-    } else {
-      errorMessage.value = 'Erreur de connexion au serveur.'
-    }
-  } finally {
-    loading.value = false
-  }
+  const res = await auth.login(email.value, password.value)
+  if (res.success) await router.push('/')
+  else error.value = res.message
 }
 </script>
 

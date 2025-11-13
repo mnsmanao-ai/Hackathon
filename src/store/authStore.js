@@ -1,25 +1,43 @@
 import { defineStore } from 'pinia'
-import axios from '@/api/axios'
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        user: null,
-        token: localStorage.getItem('token') || null
+        user: JSON.parse(localStorage.getItem('user')) || null,
+        token: localStorage.getItem('token') || null,
     }),
+
     getters: {
-        isAuthenticated: (state) => !!state.token
+        isAuthenticated: (state) => !!state.token,
     },
+
     actions: {
-        async login(credentials) {
-            const { data } = await axios.post('/auth/login', credentials)
-            this.token = data.token
-            this.user = data.user
-            localStorage.setItem('token', this.token)
+        async login(email, password) {
+            try {
+                // ⚠️ Pour l’instant : simulation API
+                if (email === 'admin@burostock.fr' && password === 'admin') {
+                    const fakeUser = { id: 1, name: 'Admin Burostock', email }
+                    const fakeToken = 'jwt-simulation-token'
+
+                    this.user = fakeUser
+                    this.token = fakeToken
+
+                    localStorage.setItem('user', JSON.stringify(fakeUser))
+                    localStorage.setItem('token', fakeToken)
+
+                    return { success: true }
+                } else {
+                    throw new Error('Identifiants invalides')
+                }
+            } catch (err) {
+                return { success: false, message: err.message }
+            }
         },
+
         logout() {
-            this.token = null
             this.user = null
+            this.token = null
+            localStorage.removeItem('user')
             localStorage.removeItem('token')
-        }
-    }
+        },
+    },
 })

@@ -24,9 +24,10 @@ function goToDetail(id) {
 
       <div class="prospects__cta">
 
-        <button class="btn btn__primary">
-          <i class="icon">+</i>
+        <button class="btn btn__secondary">
           Ajouter un prospect</button>
+        <button class="btn btn__primary">
+          Scorer</button>
       </div>
     </header>
 
@@ -93,6 +94,10 @@ function goToDetail(id) {
       color: variables.$gray-04;
       margin-top: 0.3rem;
       font-size: 0.95rem;
+    }
+    .prospects__cta {
+      display: flex;
+      gap: 0.8rem;
     }
   }
 
