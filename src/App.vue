@@ -25,6 +25,10 @@ const layout = computed(() => {
       return DefaultLayout
   }
 })
+
+import { getContacts } from '@/api/contacts.js';
+console.log(getContacts);
+
 </script>
 
 <style lang="scss">
