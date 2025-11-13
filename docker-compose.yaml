@@ -11,11 +11,11 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "3307:3307"
     environment:
       DB_HOST: s0c8sws804cgw8c0ko8cg4sw
       DB_USER: hackaton
-      DB_PASSWORD: hackaton
+      DB_PASSWORD: #cfvPQcp%Fi2K0
       DB_NAME: crm_hackathon
       DB_PORT: 3306
     restart: always
