@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 import pymysql
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-import config
-
 
 app = Flask(__name__)
 
@@ -32,7 +30,7 @@ project = AIProjectClient(
 
 def call_agent(message: str):
     """Envoie un message à ton agent Azure IA et retourne sa réponse."""
-    agent = project.agents.get_agent(config.AGENT_ID)
+    agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
 
     # Créer un thread
     thread = project.agents.threads.create()
@@ -189,7 +187,7 @@ def agent_analyze():
 def home():
     return {
         "status": "CRM API running",
-        "agent": config.AGENT_ID,
+        "agent": "asst_TAELII8aWgovcx7uJ72I9QCo",
         "version": "2.0"
     }
 
