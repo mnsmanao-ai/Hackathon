@@ -10,6 +10,8 @@ services:
 
   backend:
     build: ./backend
+    networks:
+      - coolify
     ports:
       - "3307:3307"
     environment:

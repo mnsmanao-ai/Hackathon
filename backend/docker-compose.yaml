@@ -1,21 +1,17 @@
-version: "3.9"
+version: '3.9'
 
 services:
-  frontend:
+  python-script:
     build: .
-    ports:
-      - "80:80"
-    depends_on:
-      - api
-
-  api:
-    build: ./api
+    container_name: mysql-client
+    networks:
+      - coolify
     environment:
-      DB_HOST: s0c8sws804cgw8c0ko8cg4sw
-      DB_USER: hackaton
-      DB_PASSWORD: #cfvPQcp%Fi2K0
-      DB_NAME: crm_hackathon
-      DB_PORT: 3306
-    ports:
-      - "3307:3307"
-    restart: always
+      MYSQL_HOST: s0c8sws804cgw8c0ko8cg4sw
+      MYSQL_USER: hackaton
+      MYSQL_PASSWORD: #cfvPQcp%Fi2K0
+      MYSQL_DATABASE: crm_hackathon
+
+networks:
+  coolify:
+    external: true
