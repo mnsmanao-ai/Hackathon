@@ -21,4 +21,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 3307
 
 # Lancer l’API
-CMD ["python", "app.py"]
+CMD ["python", "main.py"]
