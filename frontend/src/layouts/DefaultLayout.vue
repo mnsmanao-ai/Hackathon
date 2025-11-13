@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar__logo">
-        <img src="@/assets/logo.jpg" alt="Burostock CRM" />
+        <img src="../assets/logo.jpg" alt="Burostock CRM" />
         <h1>BUROSTOCK</h1>
       </div>
 

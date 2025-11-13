@@ -45,7 +45,7 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { useProspectsStore } from '@/store/prospectsStore'
+import { useProspectsStore } from '@/store/prospectsStore.js'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  # --- Frontend Vue.js ---
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vue-frontend
+    ports:
+      - "8003:80" # adapte si ton port nginx est différent
+    networks:
+      - coolify   # même réseau Docker que ton MySQL
+    restart: unless-stopped
+
+  # --- Script Python pour test MySQL ---
+  mysql-tester:
+    build:
+      context: ./mysql-tester
+    container_name: mysql-tester
+    environment:
+      MYSQL_HOST: s0c8sws804cgw8c0ko8cg4sw   # nom du conteneur MySQL
+      MYSQL_PORT: 3306
+      MYSQL_USER: hackaton
+      MYSQL_PASSWORD: ton_mot_de_passe
+      MYSQL_DATABASE: crm_hackaton
+    networks:
+      - coolify
+    depends_on:
+      - frontend
+    restart: "no" # ce conteneur s'arrête après test
+
+networks:
+  coolify:
+    external: true

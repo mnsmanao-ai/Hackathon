@@ -28,7 +28,7 @@ const layout = computed(() => {
 </script>
 
 <style lang="scss">
-@import '@/assets/styles/base.scss';
-@import '@/assets/styles/main.scss';
+@import '@/assets/styles/base';
+@import '@/assets/styles/main';
 
 </style>

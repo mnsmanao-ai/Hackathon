@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copie du reste
-COPY . .
+COPY .. .
 
 # Build Vite
 RUN npm run build

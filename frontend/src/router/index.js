@@ -3,7 +3,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import ProspectView from '@/views/ProspectView.vue'
 import LoginView from "@/views/LoginView.vue";
 import ProspectDetailView from "@/views/ProspectDetailView.vue";
-import { useAuthStore } from '@/store/authStore'
+import { useAuthStore } from '@/store/authStore.js'
 
 const routes = [
     {

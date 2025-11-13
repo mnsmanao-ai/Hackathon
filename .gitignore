@@ -35,5 +35,5 @@ coverage
 # Vitest
 __screenshots__/
 /.vscode/extensions.json
-/jsconfig.json
-/package-lock.json
+/frontend/jsconfig.json
+/frontend/package-lock.json
