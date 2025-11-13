@@ -1,9 +1,15 @@
+# Base image
 FROM python:3.12-slim
 
+# Définir le répertoire de travail
 WORKDIR /app
 
-COPY test_mysql.py /app/
+# Copier les fichiers
+COPY requirements.txt .
+COPY test_mysql.py .
 
-RUN pip install --no-cache-dir pymysql cryptography
+# Installer les dépendances
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Commande par défaut
 CMD ["python", "test_mysql.py"]

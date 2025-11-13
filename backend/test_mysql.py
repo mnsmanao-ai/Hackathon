@@ -2,7 +2,9 @@ import pymysql
 import os
 
 try:
+
     # Tentative de connexion
+
     connection = pymysql.connect(
         host=os.getenv('MYSQL_HOST'),
         user=os.getenv('MYSQL_USER'),

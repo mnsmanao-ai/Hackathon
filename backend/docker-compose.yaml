@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  python-script:
+    build: .
+    container_name: mysql-client
+    networks:
+      - coolify
+    environment:
+      MYSQL_HOST: s0c8sws804cgw8c0ko8cg4sw
+      MYSQL_USER: hackaton
+      MYSQL_PASSWORD: #cfvPQcp%Fi2K0
+      MYSQL_DATABASE: crm_hackathon
+
+networks:
+  coolify:
+    external: true
