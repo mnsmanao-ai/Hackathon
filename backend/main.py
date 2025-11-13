@@ -17,7 +17,7 @@ app.add_middleware(
 # Config BDD via variables d'environnement
 DB_HOST = os.getenv("DB_HOST", "mysql")
 DB_USER = os.getenv("DB_USER", "hackaton")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "hackaton")
+DB_PASSWORD = "#cfvPQcp%Fi2K0"
 DB_NAME = os.getenv("DB_NAME", "crm_hackathon")
 DB_PORT = int(os.getenv("DB_PORT", "3306"))
 
