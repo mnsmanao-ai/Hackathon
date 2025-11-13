@@ -17,5 +17,5 @@ services:
       DB_NAME: crm_hackathon
       DB_PORT: 3306
     ports:
-      - "8000:8000"
+      - "3307:3307"
     restart: always
