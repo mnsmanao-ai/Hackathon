@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 # Build Vite
-RUN npm run dev
+RUN npm run build
 
 # Étape 2 : Serveur Nginx
 FROM nginx:alpine
