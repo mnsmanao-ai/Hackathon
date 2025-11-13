@@ -1,4 +1,4 @@
-fastapi
-uvicorn
+Flask
 pymysql
-cryptography
+azure-ai-projects
+azure-identity
