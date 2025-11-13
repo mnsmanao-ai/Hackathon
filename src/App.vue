@@ -10,6 +10,7 @@ import { useRoute } from 'vue-router'
 
 // Imports des layouts globaux
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import AuthLayout from "@/layouts/AuthLayout.vue";
 
 // Récupération de la route actuelle
 const route = useRoute()
@@ -18,6 +19,8 @@ const route = useRoute()
 const layout = computed(() => {
   const layoutName = route.meta.layout || 'default'
   switch (layoutName) {
+    case "auth":
+      return AuthLayout
     default:
       return DefaultLayout
   }

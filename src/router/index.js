@@ -1,11 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '@/views/DashboardView.vue'
 import ProspectView from '@/views/ProspectView.vue'
+import LoginView from "@/views/LoginView.vue";
 
 const routes = [
-    { path: '/dashboard', component: DashboardView, meta: { layout: 'default' } },
-    { path: '/prospects', component: ProspectView, meta: { layout: 'default' } },
-    { path: '/', redirect: '/dashboard' }
+    {
+        path: '/auth',
+        meta : { layout: 'auth' },
+        children: [
+            { path: 'login', component: LoginView, meta : { layout: 'auth' } },
+        ],
+    },
+    {
+        path: '/',
+        children: [
+            { path: 'dashboard', component: DashboardView },
+            { path: 'prospects', component: ProspectView },
+            // autres routes internes
+        ],
+    }
 ]
 
 const router = createRouter({

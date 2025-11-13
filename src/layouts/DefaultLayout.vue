@@ -43,6 +43,9 @@
     <main class="main">
       <!-- Topbar -->
       <header class="topbar">
+        <div class="topbar__burger" onclick="@toggleSidebar()">
+          <i class="icon">☰</i>
+        </div>
         <div class="topbar__search">
           <input type="text" placeholder="Rechercher un client..." v-model="search" />
         </div>
@@ -63,6 +66,16 @@
 <script setup>
 import { ref } from 'vue'
 const search = ref('')
+
+// logique du burger menu pour mobile
+function toggleSidebar(){
+  const sidebar = document.querySelector('.sidebar')
+  if (sidebar.style.display === 'flex') {
+    sidebar.style.display = 'none'
+  } else {
+    sidebar.style.display = 'flex'
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -125,8 +138,13 @@ const search = ref('')
       }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      z-index: 1000;
     }
   }
 
@@ -141,6 +159,16 @@ const search = ref('')
       align-items: center;
       justify-content: space-between;
       padding: 0.8rem 2rem;
+
+      &__burger {
+        display: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+
+        @media (max-width: 1024px) {
+          display: block;
+        }
+      }
 
       &__search input {
         border: none;
