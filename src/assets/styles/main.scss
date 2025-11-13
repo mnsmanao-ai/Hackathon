@@ -7,6 +7,11 @@ a,
   text-decoration: none;
   color: variables.$red;
   transition: 0.4s;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 }
 
 .btn {
@@ -42,6 +47,7 @@ a,
   &:hover {
     background-color: variables.$red-soft;
     color: variables.$red;
+    cursor: pointer;
   }
 
   &.active {

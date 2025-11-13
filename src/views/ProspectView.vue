@@ -1,5 +1,17 @@
 <script setup>
 
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useProspectsStore } from '@/store/prospectsStore.js'
+
+const router = useRouter()
+const prospectsStore = useProspectsStore()
+const { prospects } = storeToRefs(prospectsStore)
+
+function goToDetail(id) {
+  prospectsStore.selectProspect(id)
+  router.push(`/prospects/${id}`)
+}
 </script>
 
 <template>
@@ -24,55 +36,27 @@
           <tr>
             <th>Nom</th>
             <th>Entreprise</th>
+            <th>Secteur</th>
             <th>Email</th>
             <th>Téléphone</th>
-            <th>Statut</th>
             <th>Score IA</th>
-            <th>Dernière activité</th>
+            <th>Dernière interaction</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Jean Dupont</td>
-            <td>Dupont SARL</td>
-            <td>dupont.sarl@gmail.com</td>
-            <td>+33 6 12 34 56 78</td>
-            <td>Contacté</td>
-            <td>85</td>
-            <td>2024-06-15</td>
-          </tr>
-          <tr>
-            <td>Jean Dupont</td>
-            <td>Dupont SARL</td>
-            <td>dupont.sarl@gmail.com</td>
-            <td>+33 6 12 34 56 78</td>
-            <td>Contacté</td>
-            <td>85</td>
-            <td>2024-06-15</td>
-          </tr><tr>
-            <td>Jean Dupont</td>
-            <td>Dupont SARL</td>
-            <td>dupont.sarl@gmail.com</td>
-            <td>+33 6 12 34 56 78</td>
-            <td>Contacté</td>
-            <td>85</td>
-            <td>2024-06-15</td>
-          </tr><tr>
-            <td>Jean Dupont</td>
-            <td>Dupont SARL</td>
-            <td>dupont.sarl@gmail.com</td>
-            <td>+33 6 12 34 56 78</td>
-            <td>Contacté</td>
-            <td>85</td>
-            <td>2024-06-15</td>
-          </tr><tr>
-            <td>Jean Dupont</td>
-            <td>Dupont SARL</td>
-            <td>dupont.sarl@gmail.com</td>
-            <td>+33 6 12 34 56 78</td>
-            <td>Contacté</td>
-            <td>85</td>
-            <td>2024-06-15</td>
+          <tr
+              v-for="p in prospects"
+              :key="p.id"
+              @click="goToDetail(p.id)"
+              class="prospect-row"
+          >
+            <td>{{ p.contact }}</td>
+            <td>{{ p.company }}</td>
+            <td>{{ p.sector }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.phone }}</td>
+            <td><span class="score">{{ p.score }}</span></td>
+            <td>{{ p.lastInteraction }}</td>
           </tr>
         </tbody>
       </table>
@@ -120,6 +104,10 @@
       border-collapse: collapse;
       border-radius: 15px;
 
+      .score {
+        color: variables.$red;
+      }
+
       th, td {
         padding: 0.75rem;
         text-align: left;
@@ -135,6 +123,10 @@
       tr {
         color: variables.$gray-04;
         background-color: variables.$gray-06;
+
+        &:hover {
+          cursor: pointer;
+        }
       }
 
       tr:nth-child(odd) {

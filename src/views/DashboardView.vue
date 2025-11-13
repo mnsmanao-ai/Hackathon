@@ -5,27 +5,27 @@
       <p>Vue d’ensemble de votre activité commerciale</p>
     </header>
 
-    <!-- KPIs principaux -->
-    <section class="kpis">
-      <div class="kpi">
-        <div class="kpi__title">Prospects actifs</div>
-        <div class="kpi__value">324</div>
-        <div class="kpi__sub">+12% ce mois</div>
+    <!-- cards principaux -->
+    <section class="cards">
+      <div class="card">
+        <div class="card__title">Prospects actifs</div>
+        <div class="card__value">324</div>
+        <div class="card__sub">+12% ce mois</div>
       </div>
-      <div class="kpi">
-        <div class="kpi__title">Taux de conversion</div>
-        <div class="kpi__value">18.7%</div>
-        <div class="kpi__sub">+3 points</div>
+      <div class="card">
+        <div class="card__title">Taux de conversion</div>
+        <div class="card__value">18.7%</div>
+        <div class="card__sub">+3 points</div>
       </div>
-      <div class="kpi">
-        <div class="kpi__title">Ventes mensuelles</div>
-        <div class="kpi__value">142</div>
-        <div class="kpi__sub">Objectif : 150</div>
+      <div class="card">
+        <div class="card__title">Ventes mensuelles</div>
+        <div class="card__value">142</div>
+        <div class="card__sub">Objectif : 150</div>
       </div>
-      <div class="kpi">
-        <div class="kpi__title">Relances en attente</div>
-        <div class="kpi__value">27</div>
-        <div class="kpi__sub">5 urgentes</div>
+      <div class="card">
+        <div class="card__title">Relances en attente</div>
+        <div class="card__value">27</div>
+        <div class="card__sub">5 urgentes</div>
       </div>
     </section>
 
@@ -96,12 +96,12 @@
     }
   }
 
-  .kpis {
+  .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
 
-    .kpi {
+    .card {
       background: variables.$background;
       border-radius: 8px;
       padding: 1rem 1.2rem;
