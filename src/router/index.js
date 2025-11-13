@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import DashboardView from '@/views/DashboardView.vue'
 import ProspectView from '@/views/ProspectView.vue'
 import LoginView from "@/views/LoginView.vue";
@@ -25,7 +25,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes
 })
 export default router
