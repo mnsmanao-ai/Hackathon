@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import {getContacts} from "@/api/contacts.js";
 
 export const useProspectsStore = defineStore('prospects', {
     state: () => ({
@@ -20,7 +21,7 @@ export const useProspectsStore = defineStore('prospects', {
             this.error = null
 
             try {
-                const res = await axios.get('/api/contacts')
+                const res = await getContacts();
 
                 // L’API renvoie "id_contact" → on mappe vers "id"
                 this.prospects = res.data.contacts.map(c => ({
