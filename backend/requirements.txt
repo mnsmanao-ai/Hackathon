@@ -2,3 +2,4 @@ Flask
 pymysql
 azure-ai-projects
 azure-identity
+flasgger

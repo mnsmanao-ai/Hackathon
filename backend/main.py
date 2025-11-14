@@ -2,47 +2,44 @@ from flask import Flask, request, jsonify
 import pymysql
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
+from flasgger import Swagger, swag_from
 
 app = Flask(__name__)
 
+swagger = Swagger(app)  # 🔥 active Swagger UI
 
-# -----------------------------------
-# 🔌 CONFIG MYSQL
-# -----------------------------------
+
+# ----------------------------------------------------------
+# 🔌 MYSQL CONFIG
+# ----------------------------------------------------------
 def db():
     return pymysql.connect(
         host="s0c8sws804cgw8c0ko8cg4sw",
         user="hackaton",
-        password="#cfvPQcp%Fi2K0",  # mets ton mot de passe MySQL
+        password="#cfvPQcp%Fi2K0",
         database="crm_hackathon",
         cursorclass=pymysql.cursors.DictCursor
     )
 
 
-# -----------------------------------
-# 🤖 CONFIG AZURE AGENT
-# -----------------------------------
+# ----------------------------------------------------------
+# 🤖 AZURE AGENT
+# ----------------------------------------------------------
 project = AIProjectClient(
     credential=DefaultAzureCredential(),
     endpoint="https://gestionprospect1234567-resource.services.ai.azure.com/api/projects/Gestionprospect1234567"
 )
 
-
 def call_agent(message: str):
-    """Envoie un message à ton agent Azure IA et retourne sa réponse."""
     agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
-
-    # Créer un thread
     thread = project.agents.threads.create()
 
-    # Ajouter message utilisateur
     project.agents.messages.create(
         thread_id=thread.id,
         role="user",
         content=message
     )
 
-    # Lancer execution
     run = project.agents.runs.create_and_process(
         thread_id=thread.id,
         agent_id=agent.id
@@ -51,10 +48,9 @@ def call_agent(message: str):
     if run.status == "failed":
         return {"error": run.last_error}
 
-    # Récupérer les messages
     messages = project.agents.messages.list(thread_id=thread.id)
-
     result = None
+
     for msg in messages:
         if msg.text_messages:
             result = msg.text_messages[-1].text.value
@@ -62,10 +58,114 @@ def call_agent(message: str):
     return {"response": result}
 
 
-# -----------------------------------
-# 1️⃣ GET CONTACT
-# -----------------------------------
+# ----------------------------------------------------------
+# 📌 USERS
+# ----------------------------------------------------------
+@app.get("/users")
+@swag_from({
+    "summary": "Liste des utilisateurs",
+    "tags": ["Users"],
+    "responses": {
+        200: {"description": "Liste complète des utilisateurs"}
+    }
+})
+def users_list():
+    con = db()
+    with con.cursor() as c:
+        c.execute("SELECT * FROM users")
+        return jsonify(c.fetchall())
+
+
+@app.get("/users/<int:id_user>")
+@swag_from({
+    "summary": "Récupérer un utilisateur",
+    "tags": ["Users"],
+    "parameters": [{
+        "name": "id_user",
+        "in": "path",
+        "required": True,
+        "schema": {"type": "integer"}
+    }],
+    "responses": {200: {"description": "Utilisateur trouvé"}}
+})
+def users_get(id_user):
+    con = db()
+    with con.cursor() as c:
+        c.execute("SELECT * FROM users WHERE id_user=%s", (id_user,))
+        return jsonify(c.fetchone())
+
+
+@app.post("/users")
+@swag_from({
+    "summary": "Créer un utilisateur",
+    "tags": ["Users"],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "firstname": {"type": "string"},
+                        "lastname": {"type": "string"},
+                        "email": {"type": "string"},
+                        "password_hash": {"type": "string"},
+                        "phone": {"type": "string"},
+                        "active": {"type": "boolean"}
+                    }
+                }
+            }
+        }
+    },
+    "responses": {200: {"description": "Utilisateur créé"}}
+})
+def users_create():
+    data = request.json
+    con = db()
+    with con.cursor() as c:
+        c.execute("""
+            INSERT INTO users(firstname, lastname, email, password_hash, phone, active)
+            VALUES (%s,%s,%s,%s,%s,%s)
+        """, (
+            data["firstname"],
+            data["lastname"],
+            data["email"],
+            data["password_hash"],
+            data["phone"],
+            data.get("active", True),
+        ))
+        con.commit()
+    return jsonify({"message": "user_created"})
+
+
+# ----------------------------------------------------------
+# 👥 CONTACTS (exemple complet)
+# ----------------------------------------------------------
+@app.get("/contacts")
+@swag_from({
+    "summary": "Liste complète des contacts",
+    "tags": ["Contacts"],
+    "responses": {200: {"description": "Liste des contacts"}}
+})
+def contacts_list():
+    con = db()
+    with con.cursor() as c:
+        c.execute("SELECT * FROM contacts")
+        return jsonify(c.fetchall())
+
+
 @app.get("/contacts/<int:id_contact>")
+@swag_from({
+    "summary": "Détails d’un contact avec interactions + scoring",
+    "tags": ["Contacts"],
+    "parameters": [{
+        "name": "id_contact",
+        "in": "path",
+        "required": True,
+        "schema": {"type": "integer"}
+    }],
+    "responses": {200: {"description": "Détails du contact"}}
+})
 def contact_get(id_contact):
     con = db()
     with con.cursor() as c:
@@ -84,127 +184,84 @@ def contact_get(id_contact):
         "scores": scores
     })
 
-@app.get("/contacts")
-def contact_list():
-    con = db()
-    with con.cursor() as c:
-        c.execute("SELECT * FROM contacts")
-        contacts = c.fetchall()
 
-    return jsonify({
-        "contacts": contacts
-    })
-
-
-# -----------------------------------
-# 2️⃣ UPDATE CONTACT SCORE
-# -----------------------------------
-@app.patch("/contact/<int:id_contact>/score")
-def update_score(id_contact):
+@app.post("/contacts")
+@swag_from({
+    "summary": "Créer un contact",
+    "tags": ["Contacts"],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "company_id": {"type": "integer"},
+                        "firstname": {"type": "string"},
+                        "lastname": {"type": "string"},
+                        "email": {"type": "string"},
+                        "phone": {"type": "string"},
+                        "source": {"type": "string"},
+                        "status_interaction": {"type": "string"}
+                    }
+                }
+            }
+        }
+    },
+    "responses": {200: {"description": "Contact créé"}}
+})
+def contact_create():
     data = request.json
-    score = data.get("score")
-
-    if score is None:
-        return jsonify({"error": "Missing score"}), 400
-
     con = db()
     with con.cursor() as c:
         c.execute("""
-            UPDATE contacts
-            SET last_score=%s, updated_at=NOW()
-            WHERE id_contact=%s
-        """, (score, id_contact))
-        con.commit()
-
-    return jsonify({"message": "score_updated", "score": score})
-
-
-# -----------------------------------
-# 3️⃣ CREATE SCORING HISTORY
-# -----------------------------------
-@app.post("/scoring_history")
-def scoring_history_create():
-    data = request.json
-
-    required = ["contact_id", "score", "algorithm_version", "reason"]
-    for field in required:
-        if field not in data:
-            return jsonify({"error": f"Missing field: {field}"}), 400
-
-    con = db()
-    with con.cursor() as c:
-        c.execute("""
-            INSERT INTO scoring_history(contact_id, score, algorithm_version, reason, created_at)
-            VALUES (%s, %s, %s, %s, NOW())
+            INSERT INTO contacts(company_id, firstname, lastname, email, phone, source, status_interaction)
+            VALUES (%s,%s,%s,%s,%s,%s,%s)
         """, (
-            data["contact_id"],
-            data["score"],
-            data["algorithm_version"],
-            data["reason"]
+            data["company_id"],
+            data["firstname"],
+            data["lastname"],
+            data["email"],
+            data["phone"],
+            data["source"],
+            data["status_interaction"]
         ))
         con.commit()
-
-    return jsonify({"message": "history_created"})
-
-
-# -----------------------------------
-# 4️⃣ CREATE TASK
-# -----------------------------------
-@app.post("/tasks")
-def task_create():
-    data = request.json
-
-    required = ["contact_id", "score", "algorithm_version", "reason"]
-    for field in required:
-        if field not in data:
-            return jsonify({"error": f"Missing field: {field}"}), 400
-
-    con = db()
-    with con.cursor() as c:
-        c.execute("""
-            INSERT INTO tasks(contact_id, score, algorithm_version, reason, created_at)
-            VALUES (%s, %s, %s, %s, NOW())
-        """, (
-            data["contact_id"],
-            data["score"],
-            data["algorithm_version"],
-            data["reason"]
-        ))
-        con.commit()
-
-    return jsonify({"message": "task_created"})
+    return jsonify({"message": "contact_created"})
 
 
-# -----------------------------------
-# 5️⃣ ROUTE AGENT IA
-# -----------------------------------
+# ----------------------------------------------------------
+# 🧠 AGENT IA
+# ----------------------------------------------------------
 @app.post("/agent/analyze")
+@swag_from({
+    "summary": "Analyse via Azure IA",
+    "tags": ["Agent IA"],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {"type": "object", "properties": {"message": {"type": "string"}}}
+            }
+        }
+    },
+    "responses": {200: {"description": "Réponse IA"}}
+})
 def agent_analyze():
-    data = request.json
-    message = data.get("message")
-
-    if not message:
-        return jsonify({"error": "Missing message"}), 400
-
-    result = call_agent(message)
-
-    return jsonify(result)
+    message = request.json.get("message")
+    return jsonify(call_agent(message))
 
 
-# -----------------------------------
-# HOME
-# -----------------------------------
+# ----------------------------------------------------------
+# 🏠 HOME
+# ----------------------------------------------------------
 @app.get("/")
 def home():
-    return {
-        "status": "CRM API running",
-        "agent": "asst_TAELII8aWgovcx7uJ72I9QCo",
-        "version": "2.0"
-    }
+    return {"status": "CRM API running", "version": "3.0", "swagger": "/docs"}
 
 
-# -----------------------------------
-# RUN API
-# -----------------------------------
+# ----------------------------------------------------------
+# RUN
+# ----------------------------------------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3307, debug=True)
