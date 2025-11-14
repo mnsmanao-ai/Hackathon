@@ -6,7 +6,7 @@ from flasgger import Swagger, swag_from
 from flask_cors import CORS
 import jwt
 from datetime import datetime, timedelta
-from flask_bcrypt import check_password_hash
+from flask_bcrypt import check_password_hash, generate_password_hash
 
 SECRET_KEY = "96893dad878d8b0a5df57de1f022ceee159a2c8a2284396a09a6cee116ac4e40"  # mettre en variable d'environnement en prod
 
