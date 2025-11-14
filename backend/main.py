@@ -2,12 +2,10 @@ from flask import Flask, request, jsonify
 import pymysql
 import os
 from flask_cors import CORS
-from flasgger import Swagger, swag_from
+from flasgger import Swagger
 
-# Azure Agents
 from azure.ai.agents import AgentsClient
 from azure.core.credentials import AzureKeyCredential
-
 
 app = Flask(__name__)
 CORS(app)
@@ -28,42 +26,43 @@ def db():
 
 
 # ----------------------------------------------------------
-# AZURE AGENT
+# AGENT AZURE (NOUVEAU SDK)
 # ----------------------------------------------------------
-api_key = os.getenv("AZURE_AI_API_KEY")
+api_key = os.environ.get("AZURE_AI_API_KEY")
 
 client = AgentsClient(
     endpoint="https://aihackmetropole-resource.services.ai.azure.com/",
     credential=AzureKeyCredential(api_key)
 )
 
-project = client.projects.get_project("AIHackmetropole")
+AGENT_ID = "asst_TAELII8aWgovcx7uJ72I9QCo"
 
 
 def call_agent(message: str):
-    agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
-    thread = project.agents.threads.create()
+    # Créer un thread
+    thread = client.threads.create()
 
-    project.agents.messages.create(
+    # Ajouter le message utilisateur
+    client.messages.create(
         thread_id=thread.id,
         role="user",
         content=message
     )
 
-    run = project.agents.runs.create_and_process(
+    # Créer et exécuter un run
+    run = client.runs.create_and_poll(
         thread_id=thread.id,
-        agent_id=agent.id
+        agent_id=AGENT_ID
     )
 
-    if run.status == "failed":
-        return {"error": run.last_error}
+    # Récupérer les msgs
+    msgs = client.messages.list(thread_id=thread.id)
 
-    messages = project.agents.messages.list(thread_id=thread.id)
-    for msg in messages:
-        if msg.text_messages:
-            return {"response": msg.text_messages[-1].text.value}
+    for m in msgs:
+        if m.role == "assistant" and m.content:
+            return m.content[0].text
 
-    return {"response": None}
+    return None
 
 # ----------------------------------------------------------
 # 📌 USERS
