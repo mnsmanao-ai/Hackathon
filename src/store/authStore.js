@@ -63,17 +63,4 @@ export const useAuthStore = defineStore('auth', {
     }
 });
 
-// Utilitaire pour toutes les requêtes API avec token
-export const apiFetch = async (url, options = {}) => {
-    const auth = useAuthStore();
-    const headers = {
-        "Content-Type": "application/json",
-        ...(auth.token ? { "Authorization": `Bearer ${auth.token}` } : {})
-    };
-    const res = await fetch(url, { ...options, headers });
-    if (res.status === 401) {
-        auth.logout();
-        throw new Error("Session expirée, veuillez vous reconnecter");
-    }
-    return res.json();
-};
+

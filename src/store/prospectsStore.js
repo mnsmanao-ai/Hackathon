@@ -1,6 +1,5 @@
-import {defineStore} from 'pinia'
-// ⚠️ Mise à jour de l'import : on importe maintenant createContact
-import {createContact, getContactById, getContacts} from '@/api/contacts'
+import { defineStore } from 'pinia'
+import { getContacts, getContactById, createContact } from '@/api/contacts'
 
 export const useProspectsStore = defineStore('prospects', {
     state: () => ({
@@ -8,11 +7,10 @@ export const useProspectsStore = defineStore('prospects', {
         selectedProspect: null,
         loading: false,
         error: null,
-        searchQuery: '' // Pour ton getter de recherche
+        searchQuery: ''
     }),
 
     getters: {
-        // ... (Pas de changement ici)
         getProspectById: (state) => (id) =>
             state.prospects.find(p => p.id === id),
 
@@ -25,16 +23,13 @@ export const useProspectsStore = defineStore('prospects', {
                 p.firstname.toLowerCase().includes(q) ||
                 p.lastname.toLowerCase().includes(q) ||
                 p.email.toLowerCase().includes(q) ||
-                // Note : Vérifiez si p.tags existe avant d'appeler toLowerCase()
                 (p.tags && p.tags.toLowerCase().includes(q))
             )
         }
     },
 
     actions: {
-        // ... (loadProspects et selectProspect inchangés)
-
-        /** Charge les prospects depuis ton API */
+        /** Récupère les prospects via l’API (sécurisé avec apiFetch) */
         async loadProspects() {
             this.loading = true
             this.error = null
@@ -57,6 +52,7 @@ export const useProspectsStore = defineStore('prospects', {
                     created_at: c.created_at,
                     updated_at: c.updated_at
                 }))
+
             } catch (err) {
                 this.error = err.message || 'Erreur inconnue'
             } finally {
@@ -64,22 +60,23 @@ export const useProspectsStore = defineStore('prospects', {
             }
         },
 
-        /** Sélectionne un prospect */
-        selectProspect(id) {
+        /** Sélectionner un prospect (API sécurisée) */
+        async selectProspect(id) {
+            this.error = null
             try {
-                return getContactById(id)
+                const data = await getContactById(id)
+                this.selectedProspect = data
+                return data
             } catch (err) {
-                this.error = err.message || 'Erreur lors de la sélection du prospect'
+                this.error = err.message
             }
         },
 
-        /** Crée un prospect côté Pinia **et l'envoie à l'API** */
+        /** Création d’un prospect avec apiFetch */
         async createProspect(newData) {
             this.loading = true
             this.error = null
 
-            // 1. Préparation des données pour l'API
-            // On ne doit envoyer que les champs pertinents (ex: pas d'ID local temporaire)
             const apiData = {
                 firstname: newData.firstname,
                 lastname: newData.lastname,
@@ -90,16 +87,13 @@ export const useProspectsStore = defineStore('prospects', {
                 source: newData.source || 'Manuel',
                 status_interaction: newData.status_interaction || 'Nouveau',
                 tags: newData.tags || ''
-                // L'API devrait gérer les champs last_score, created_at, updated_at
             }
 
             try {
-                // 2. Appel de l'API pour créer le contact
                 const createdContact = await createContact(apiData)
 
-                // 3. Transformation du résultat de l'API pour l'état Pinia
                 const newProspect = {
-                    id: createdContact.id_contact, // Utilise l'ID retourné par l'API
+                    id: createdContact.id_contact,
                     firstname: createdContact.firstname,
                     lastname: createdContact.lastname,
                     email: createdContact.email,
@@ -114,22 +108,17 @@ export const useProspectsStore = defineStore('prospects', {
                     updated_at: createdContact.updated_at
                 }
 
-                // 4. Mise à jour du store Pinia
                 this.prospects.push(newProspect)
-
                 return newProspect
 
             } catch (err) {
-                this.error = err.message || 'Échec de la création du prospect via l\'API'
-                throw err // Permet au composant appelant de gérer l'erreur
+                this.error = err.message || "Impossible de créer le prospect"
+                throw err
             } finally {
                 this.loading = false
             }
         },
 
-        // ... (updateProspect et setSearchQuery inchangés)
-
-        /** Modifie un prospect existant */
         updateProspect(id, updatedData) {
             const index = this.prospects.findIndex(p => p.id === id)
             if (index === -1) return false
@@ -140,7 +129,6 @@ export const useProspectsStore = defineStore('prospects', {
                 updated_at: new Date().toISOString()
             }
 
-            // Si le prospect modifié était sélectionné, on le met aussi à jour
             if (this.selectedProspect?.id === id) {
                 this.selectedProspect = this.prospects[index]
             }
@@ -148,7 +136,6 @@ export const useProspectsStore = defineStore('prospects', {
             return this.prospects[index]
         },
 
-        /** Change la recherche dans le store */
         setSearchQuery(q) {
             this.searchQuery = q
         }

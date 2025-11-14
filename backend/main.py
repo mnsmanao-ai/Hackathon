@@ -92,6 +92,7 @@ def call_agent(message: str):
 # 📌 USERS
 # ----------------------------------------------------------
 @app.get("/users")
+@token_required
 @swag_from({
     "summary": "Liste des utilisateurs",
     "tags": ["Users"],
@@ -99,7 +100,7 @@ def call_agent(message: str):
         200: {"description": "Liste complète des utilisateurs"}
     }
 })
-def users_list():
+def users_list(current_user_id):
     con = db()
     with con.cursor() as c:
         c.execute("SELECT * FROM users")
@@ -107,6 +108,7 @@ def users_list():
 
 
 @app.get("/users/<int:id_user>")
+@token_required
 @swag_from({
     "summary": "Récupérer un utilisateur",
     "tags": ["Users"],
@@ -118,7 +120,7 @@ def users_list():
     }],
     "responses": {200: {"description": "Utilisateur trouvé"}}
 })
-def users_get(id_user):
+def users_get(id_user, current_user_id):
     con = db()
     with con.cursor() as c:
         c.execute("SELECT * FROM users WHERE id_user=%s", (id_user,))
@@ -126,7 +128,8 @@ def users_get(id_user):
 
 
 @app.post("/users")
-def users_create():
+@token_required
+def users_create(current_user_id):
     data = request.json
     con = db()
 
@@ -173,6 +176,7 @@ def contacts_list(current_user_id):
 
 
 @app.get("/contacts/<int:id_contact>")
+@token_required
 @swag_from({
     "summary": "Détails d’un contact avec interactions + scoring",
     "tags": ["Contacts"],
@@ -184,7 +188,7 @@ def contacts_list(current_user_id):
     }],
     "responses": {200: {"description": "Détails du contact"}}
 })
-def contact_get(id_contact):
+def contact_get(id_contact, current_user_id):
     con = db()
     with con.cursor() as c:
         c.execute("SELECT * FROM contacts WHERE id_contact=%s", (id_contact,))
@@ -204,6 +208,7 @@ def contact_get(id_contact):
 
 
 @app.post("/contacts")
+@token_required
 @swag_from({
     "summary": "Créer un contact",
     "tags": ["Contacts"],
@@ -228,7 +233,7 @@ def contact_get(id_contact):
     },
     "responses": {200: {"description": "Contact créé"}}
 })
-def contact_create():
+def contact_create(current_user_id):
     data = request.json
     con = db()
     with con.cursor() as c:
