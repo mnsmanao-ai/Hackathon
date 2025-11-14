@@ -4,6 +4,12 @@
 
 Ce projet est une application CRM (Customer Relationship Management) développée dans le cadre d'un hackathon. Elle combine un backend en Python avec Flask et un frontend en Vue.js pour gérer les utilisateurs, les contacts, et les interactions, tout en intégrant des fonctionnalités d'analyse via Azure AI.
 
+### Version d'essaie
+
+https://h44c4wggso0wkksgosggs084.lucieblr.com/
+email: jean.dupont@example.com
+pwd: Password123!
+
 ---
 
 ## Fonctionnalités
