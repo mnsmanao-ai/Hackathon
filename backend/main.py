@@ -28,7 +28,7 @@ def db():
 # ----------------------------------------------------------
 # 🤖 AZURE AGENT
 # ----------------------------------------------------------
-api_key = os.getenv("DwZVlFDObsJ8VlKIZFwM9BB6MZ8CuUfjYtgykaUFFxyfDpS914vwJQQJ99BKACfhMk5XJ3w3AAAAACOG5f4I")
+api_key = os.getenv("AZURE_AI_API_KEY")
 
 
 client = AgentsClient(
