@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import pymysql
 import os
 from flask_cors import CORS
-from flasgger import Swagger
+from flasgger import Swagger, swag_from
 
 from azure.ai.agents import AgentsClient
 from azure.core.credentials import AzureKeyCredential
