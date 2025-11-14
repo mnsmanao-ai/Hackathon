@@ -36,9 +36,7 @@
           <h3>Performance commerciale</h3>
           <span>Période : Octobre - Novembre 2025</span>
         </div>
-        <div class="chart-placeholder">
-          <p>📊 Graphique à intégrer ici (Chart.js ou autre)</p>
-        </div>
+        <canvas ref="chartCanvas" class="chart-canvas"></canvas>
       </div>
 
       <!-- Activités récentes -->
@@ -59,13 +57,45 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import { useProspectsStore } from '@/store/prospectsStore';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
+const chartCanvas = ref(null);
 
 const store = useProspectsStore();
 
 // Charger les prospects si nécessaire
 onMounted(async () => {
+  if (chartCanvas.value) {
+    new Chart(chartCanvas.value, {
+      type: 'line',
+      data: {
+        labels: ['Oct 1', 'Oct 8', 'Oct 15', 'Oct 22', 'Nov 1', 'Nov 8', 'Nov 15'],
+        datasets: [{
+          label: 'Ventes',
+          data: [12, 19, 14, 17, 23, 18, 25],
+          borderColor: '#FF6384',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          tension: 0.4,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          x: { display: true, title: { display: true, text: 'Date' } },
+          y: { display: true, title: { display: true, text: 'Nombre de ventes' }, beginAtZero: true }
+        }
+      }
+    });
+  }
+
   if (!store.prospects.length) {
     await store.loadProspects();
   }
