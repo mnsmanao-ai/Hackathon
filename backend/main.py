@@ -84,6 +84,17 @@ def contact_get(id_contact):
         "scores": scores
     })
 
+@app.get("/contact")
+def contact_list():
+    con = db()
+    with con.cursor() as c:
+        c.execute("SELECT * FROM contacts")
+        contacts = c.fetchall()
+
+    return jsonify({
+        "contacts": contacts
+    })
+
 
 # -----------------------------------
 # 2️⃣ UPDATE CONTACT SCORE
