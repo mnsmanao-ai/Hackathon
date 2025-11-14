@@ -3,7 +3,7 @@
     <header class="prospect-detail__header">
       <div class="prospects__head">
         <h2>{{ prospect.company_id }}</h2>
-        <p>Contact : {{ prospect.lastname + prospect.firstname }} · Score : <strong>{{ prospect.score }}</strong></p>
+        <p>Contact : {{ prospect.lastname + " " + prospect.firstname }} · Score : <strong>{{ prospect.score }}</strong></p>
       </div>
 
       <div class="prospects__cta">
@@ -25,7 +25,7 @@
       <div class="card">
         <h3>Historique</h3>
         <ul>
-          <li v-for="(item, index) in prospect.interactions" :key="index">
+          <li v-for="item in prospect.interactions" :key="item.contact_id">
             <a>{{ item.channel }}</a>
             <strong>{{ item.date_interetaction }}</strong> — {{ item.subject }}
             <span v-if="item.content"> ({{ item.content }})</span>
@@ -63,6 +63,7 @@ function scorer() {
     .then(response => {
       // Mettre à jour le prospect avec les nouvelles données
       console.log(response)
+      store.updateProspect(response)
     })
     .catch(error => {
       console.error('Erreur lors du scoring du prospect :', error)

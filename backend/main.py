@@ -26,44 +26,43 @@ def db():
 
 
 # ----------------------------------------------------------
-# AGENT AZURE (NOUVEAU SDK)
+# 🔐 CREDENTIALS
 # ----------------------------------------------------------
-api_key = os.environ.get("AZURE_AI_API_KEY")
+credential = DefaultAzureCredential()
 
-client = AgentsClient(
-    endpoint="https://aihackmetropole-resource.services.ai.azure.com/",
-    credential=AzureKeyCredential(api_key)
+client = AIProjectClient(
+    endpoint="https://aihackmetropole-resource.services.ai.azure.com",
+    credential=credential,
 )
 
-AGENT_ID = "asst_TAELII8aWgovcx7uJ72I9QCo"
-
+project = client.get_project("AIHackmetropole")
 
 def call_agent(message: str):
-    # Créer un thread
-    thread = client.threads.create()
+    agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
 
-    # Ajouter le message utilisateur
-    client.messages.create(
+    thread = project.agents.threads.create()
+
+    project.agents.messages.create(
         thread_id=thread.id,
         role="user",
         content=message
     )
 
-    # Créer et exécuter un run
-    run = client.runs.create_and_poll(
+    run = project.agents.runs.create_and_process(
         thread_id=thread.id,
-        agent_id=AGENT_ID
+        agent_id=agent.id
     )
 
-    # Récupérer les msgs
-    msgs = client.messages.list(thread_id=thread.id)
+    if run.status == "failed":
+        return {"error": run.last_error}
 
-    for m in msgs:
-        if m.role == "assistant" and m.content:
-            return m.content[0].text
+    messages = project.agents.messages.list(thread_id=thread.id)
 
-    return None
+    for msg in messages:
+        if msg.text_messages:
+            return {"response": msg.text_messages[-1].text.value}
 
+    return {"response": None}
 # ----------------------------------------------------------
 # 📌 USERS
 # ----------------------------------------------------------

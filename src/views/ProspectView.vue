@@ -52,7 +52,7 @@ function goToDetail(id) {
               @click="goToDetail(p.id)"
               class="prospect-row"
           >
-            <td>{{ p.lastname + p.firstname }}</td>
+            <td>{{ p.lastname + " " + p.firstname }}</td>
             <td>{{ p.company_id }}</td>
             <td>{{ p.source }}</td>
             <td>{{ p.email }}</td>
