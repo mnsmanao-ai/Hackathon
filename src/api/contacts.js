@@ -9,6 +9,12 @@ export async function getContacts() {
     return await response.json();
 }
 
+export async function getContactById(contactId) {
+    const response = await fetch(`${API_URL}/${contactId}`);
+    if (!response.ok) throw new Error(`Erreur API lors de la récupération du contact ID ${contactId}`);
+    return await response.json();
+}
+
 /** Crée un nouveau contact dans l'API */
 export async function createContact(contactData) {
     const response = await fetch(API_URL, {

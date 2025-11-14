@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: CRM API
+  description: Documentation locale de l'API CRM
+  version: 1.0.0
+
+servers:
+  - url: https://jkgsgkgos8w0o4cwwoowg0go.lucieblr.com
+    description: Serveur distant
+
+paths:
+  /users:
+    get:
+      summary: Liste des utilisateurs
+      tags: [Users]
+      responses:
+        '200':
+          description: Liste des utilisateurs
+    post:
+      summary: Création d'un utilisateur
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  example: john.doe
+                password:
+                  type: string
+                  example: supersecret
+      responses:
+        '201':
+          description: Utilisateur créé
+
+  /users/{id}:
+    get:
+      summary: Récupère un utilisateur
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Utilisateur trouvé
+        '404':
+          description: Utilisateur introuvable
+    put:
+      summary: Met à jour un utilisateur
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Utilisateur mis à jour
+    delete:
+      summary: Supprime un utilisateur
+      tags: [Users]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Utilisateur supprimé
+
+  /contacts:
+    get:
+      summary: Liste des contacts
+      tags: [Contacts]
+      responses:
+        '200': { description: Liste des contacts }
+    post:
+      summary: Ajout d'un contact
+      tags: [Contacts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [firstname, lastname]
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: Contact créé
+
+  /interactions:
+    get:
+      summary: Liste des interactions
+      tags: [Interactions]
+      responses:
+        '200': { description: Liste des interactions }
+    post:
+      summary: Ajout d'une interaction
+      tags: [Interactions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contact_id, type, content]
+              properties:
+                contact_id:
+                  type: integer
+                type:
+                  type: string
+                  example: email
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Interaction ajoutée
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+
+    Contact:
+      type: object
+      properties:
+        id: { type: integer }
+        firstname: { type: string }
+        lastname: { type: string }
+        email: { type: string }
+
+    Interaction:
+      type: object
+      properties:
+        id: { type: integer }
+        contact_id: { type: integer }
+        type: { type: string }
+        content: { type: string }

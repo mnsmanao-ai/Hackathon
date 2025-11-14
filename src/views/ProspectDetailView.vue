@@ -2,8 +2,8 @@
   <section v-if="prospect" class="prospect-detail">
     <header class="prospect-detail__header">
       <div class="prospects__head">
-        <h2>{{ prospect.company }}</h2>
-        <p>Contact : {{ prospect.contact }} · Score : <strong>{{ prospect.score }}</strong></p>
+        <h2>{{ prospect.company_id }}</h2>
+        <p>Contact : {{ prospect.lastname + prospect.firstname }} · Score : <strong>{{ prospect.score }}</strong></p>
       </div>
 
       <div class="prospects__cta">
@@ -17,8 +17,9 @@
         <h3>Informations</h3>
         <p><strong>Email :</strong>   <a :href="`mailto:${prospect.email}`">{{ prospect.email }}</a></p>
         <p><strong>Téléphone :</strong> {{ prospect.phone }}</p>
-        <p><strong>Adresse :</strong> {{ prospect.address }}</p>
-        <p><strong>Secteur :</strong> {{ prospect.sector }}</p>
+        <p><strong>Source :</strong> {{ prospect.source }}</p>
+        <p><strong>Tags :</strong> {{ prospect.tags }}</p>
+        <p><strong>Status interaction :</strong> {{prospect.status_interaction}}</p>
       </div>
 
       <div class="card">

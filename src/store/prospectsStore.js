@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 // ⚠️ Mise à jour de l'import : on importe maintenant createContact
-import { getContacts, createContact } from '@/api/contacts'
+import {createContact, getContactById, getContacts} from '@/api/contacts'
 
 export const useProspectsStore = defineStore('prospects', {
     state: () => ({
@@ -66,7 +66,11 @@ export const useProspectsStore = defineStore('prospects', {
 
         /** Sélectionne un prospect */
         selectProspect(id) {
-            this.selectedProspect = this.getProspectById(id)
+            try {
+                return getContactById(id)
+            } catch (err) {
+                this.error = err.message || 'Erreur lors de la sélection du prospect'
+            }
         },
 
         /** Crée un prospect côté Pinia **et l'envoie à l'API** */
