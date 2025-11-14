@@ -7,7 +7,7 @@ export async function agentAnalyze(message) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message })
+        body: JSON.stringify("fait l'analyse du prospect dont les données sont :" + { message })
     });
 
     if (!response.ok) {
