@@ -53,12 +53,25 @@ const auth = useAuthStore()
 
 const email = ref('')
 const password = ref('')
-const error = ref('')
+const errorMessage = ref('')
+const loading = ref(false)
 
 const handleLogin = async () => {
-  const res = await auth.login(email.value, password.value)
-  if (res.success) await router.push('/')
-  else error.value = res.message
+  errorMessage.value = ''
+  loading.value = true
+
+  try {
+    const res = await auth.login(email.value, password.value)
+    if (res.success) {
+      await router.push('/dashboard') // Redirige vers dashboard après login
+    } else {
+      errorMessage.value = res.message
+    }
+  } catch (err) {
+    errorMessage.value = err.message || 'Erreur inconnue'
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -123,6 +136,7 @@ const handleLogin = async () => {
     .loader {
       width: 18px;
       height: 18px;
+      border: 2px solid #fff;
       border-top-color: transparent;
       border-radius: 50%;
       display: inline-block;

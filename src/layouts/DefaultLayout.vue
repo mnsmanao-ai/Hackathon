@@ -15,6 +15,7 @@
         <RouterLink to="/prospects" class="btn" active-class="active">
           <i class="icon">👥</i> Prospects
         </RouterLink>
+        <!--
         <RouterLink to="/pipeline" class="btn" active-class="active">
           <i class="icon">📈</i> Pipeline
         </RouterLink>
@@ -30,11 +31,12 @@
         <RouterLink to="/users" class="btn" active-class="active">
           <i class="icon">🧑‍💼</i> Utilisateurs
         </RouterLink>
+        -->
       </nav>
 
       <div class="sidebar__footer">
         <RouterLink to="/support" class="btn">
-          <i class="icon">💬</i> Support
+          <i class="icon">💬</i> Credits & Support
         </RouterLink>
       </div>
     </aside>

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import router from '@/router'
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -13,31 +14,48 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(email, password) {
             try {
-                // ⚠️ Pour l’instant : simulation API
-                if (email === 'admin@burostock.fr' && password === 'admin') {
-                    const fakeUser = { id: 1, name: 'Admin Burostock', email }
-                    const fakeToken = 'jwt-simulation-token'
+                const res = await fetch("http://localhost:3307/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Erreur de connexion");
 
-                    this.user = fakeUser
-                    this.token = fakeToken
+                this.user = data.user;
+                this.token = data.token;
 
-                    localStorage.setItem('user', JSON.stringify(fakeUser))
-                    localStorage.setItem('token', fakeToken)
+                localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("token", data.token);
 
-                    return { success: true }
-                } else {
-                    throw new Error('Identifiants invalides')
-                }
+                router.push("/dashboard"); // redirige après connexion
+                return { success: true };
             } catch (err) {
-                return { success: false, message: err.message }
+                return { success: false, message: err.message };
             }
         },
 
         logout() {
-            this.user = null
-            this.token = null
-            localStorage.removeItem('user')
-            localStorage.removeItem('token')
-        },
-    },
-})
+            this.user = null;
+            this.token = null;
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            router.push("/auth/login");
+        }
+    }
+});
+
+// Utilitaire pour toutes les requêtes API avec token
+export const apiFetch = async (url, options = {}) => {
+    const auth = useAuthStore();
+    const headers = {
+        "Content-Type": "application/json",
+        ...(auth.token ? { "Authorization": `Bearer ${auth.token}` } : {})
+    };
+    const res = await fetch(url, { ...options, headers });
+    if (res.status === 401) {
+        auth.logout();
+        throw new Error("Session expirée, veuillez vous reconnecter");
+    }
+    return res.json();
+};

@@ -4,7 +4,11 @@ from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from flasgger import Swagger, swag_from
 from flask_cors import CORS
+import jwt
+from datetime import datetime, timedelta
+from flask_bcrypt import check_password_hash
 
+SECRET_KEY = "supersecretkey"  # mettre en variable d'environnement en prod
 
 app = Flask(__name__)
 
@@ -23,6 +27,25 @@ def db():
         database="crm_hackathon",
         cursorclass=pymysql.cursors.DictCursor
     )
+
+
+from functools import wraps
+from flask import request
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"error": "Token manquant"}), 401
+        try:
+            payload = jwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token expiré"}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Token invalide"}), 401
+        return f(*args, **kwargs)
+    return decorated
 
 
 # ----------------------------------------------------------
@@ -254,6 +277,31 @@ def agent_analyze():
     message = request.json.get("message")
     return jsonify(call_agent(message))
 
+
+@app.post("/login")
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    con = db()
+    with con.cursor() as c:
+        c.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = c.fetchone()
+        if not user:
+            return jsonify({"error": "Utilisateur non trouvé"}), 401
+
+        # Vérifie le hash du mot de passe
+        if not check_password_hash(user["password_hash"], password):
+            return jsonify({"error": "Mot de passe incorrect"}), 401
+
+        # Génère un JWT
+        payload = {
+            "user_id": user["id_user"],
+            "exp": datetime.utcnow() + timedelta(hours=2)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        return jsonify({"token": token, "user": {"id": user["id_user"], "firstname": user["firstname"], "lastname": user["lastname"], "email": user["email"]}})
 
 # ----------------------------------------------------------
 # 🏠 HOME
