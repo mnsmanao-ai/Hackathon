@@ -8,7 +8,7 @@
 
       <div class="prospects__cta">
         <button class="btn btn__secondary" @click="router.push('/prospects')">← Retour</button>
-        <button class="btn btn__primary" @click="agentAnalyze">Scorer</button>
+        <button class="btn btn__primary" @click="scorer">Scorer</button>
       </div>
     </header>
 
