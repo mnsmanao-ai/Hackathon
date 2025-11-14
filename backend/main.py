@@ -28,10 +28,15 @@ def db():
 # ----------------------------------------------------------
 # 🤖 AZURE AGENT
 # ----------------------------------------------------------
-project = AIProjectClient(
-    credential=DefaultAzureCredential(),
-    endpoint="https://gestionprospect1234567-resource.services.ai.azure.com/api/projects/Gestionprospect1234567"
+api_key = os.getenv("DwZVlFDObsJ8VlKIZFwM9BB6MZ8CuUfjYtgykaUFFxyfDpS914vwJQQJ99BKACfhMk5XJ3w3AAAAACOG5f4I")
+
+
+client = AgentsClient(
+    endpoint="https://aihackmetropole-resource.services.ai.azure.com/api/projects/AIHackmetropole",
+    credential=AzureKeyCredential(api_key)
 )
+
+project = client.projects.get_project("aihackmetropole")
 
 def call_agent(message: str):
     agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
