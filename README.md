@@ -1,38 +1,124 @@
-# hack4fun
+# Hackathon CRM Project
 
-This template should help get you started developing with Vue 3 in Vite.
+## Description
 
-## Recommended IDE Setup
+Ce projet est une application CRM (Customer Relationship Management) développée dans le cadre d'un hackathon. Elle combine un backend en Python avec Flask et un frontend en Vue.js pour gérer les utilisateurs, les contacts, et les interactions, tout en intégrant des fonctionnalités d'analyse via Azure AI.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Recommended Browser Setup
+## Fonctionnalités
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### Backend
+- **API REST** pour la gestion des utilisateurs, des contacts et des interactions.
+- **Swagger UI** pour la documentation interactive des endpoints.
+- **Base de données MySQL** pour le stockage des données.
+- **Azure AI Integration** pour l'analyse des messages via un agent IA.
+- **CORS activé** pour permettre les requêtes cross-origin.
 
-## Customize configuration
+### Frontend
+- Application Vue.js avec des composants réutilisables.
+- Gestion des vues pour le tableau de bord, les détails des prospects, et l'authentification.
+- Intégration de styles SCSS pour une personnalisation avancée.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## Prérequis
 
-```sh
-npm install
-```
+- **Python 3.9+**
+- **Node.js 16+**
+- **MySQL**
+- **Docker** (optionnel pour le déploiement)
 
-### Compile and Hot-Reload for Development
+---
 
-```sh
-npm run dev
-```
+## Installation
 
-### Compile and Minify for Production
+### Backend
 
-```sh
-npm run build
-```
+1. Cloner le dépôt :
+   ```bash
+   git clone git@github.com:mnsmanao-ai/Hackathon.git
+   cd Hackathon/backend
+   ```
+
+2. Créer un environnement virtuel et installer les dépendances :
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Sous Windows : venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. Configurer la base de données MySQL :
+    - Créer une base de données `crm_hackathon`.
+    - Mettre à jour les informations de connexion dans `main.py`.
+
+4. Lancer le serveur :
+   ```bash
+   python main.py
+   ```
+
+### Frontend
+
+1. Naviguer dans le dossier `src` :
+   ```bash
+   cd ../src
+   ```
+
+2. Installer les dépendances :
+   ```bash
+   npm install
+   ```
+
+3. Lancer le serveur de développement :
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## Déploiement avec Docker
+
+1. Construire et lancer les conteneurs :
+   ```bash
+   docker-compose up --build
+   ```
+
+2. Accéder à l'application :
+    - Backend : `http://localhost:3307`
+    - Frontend : `http://localhost:5173`
+
+---
+
+## Structure du Projet
+
+### Backend
+- `main.py` : Point d'entrée de l'API Flask.
+- `api/` : Contient les fichiers TypeScript pour les appels API.
+- `model/` : Définitions des modèles de données.
+
+### Frontend
+- `src/` : Contient le code source Vue.js.
+- `components/` : Composants Vue réutilisables.
+- `views/` : Vues principales de l'application.
+- `store/` : Gestion de l'état avec Vuex.
+
+---
+
+## Endpoints Principaux
+
+### Utilisateurs
+- `GET /users` : Liste des utilisateurs.
+- `POST /users` : Créer un utilisateur.
+
+### Contacts
+- `GET /contacts` : Liste des contacts.
+- `POST /contacts` : Créer un contact.
+
+### Agent IA
+- `POST /agent/analyze` : Analyse un message via Azure AI.
+
+---
+
+## Licence
+
+Ce projet est sous licence MIT.
