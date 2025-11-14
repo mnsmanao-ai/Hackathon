@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { getContacts } from '@/api/contacts'
+// ⚠️ Mise à jour de l'import : on importe maintenant createContact
+import { getContacts, createContact } from '@/api/contacts'
 
 export const useProspectsStore = defineStore('prospects', {
     state: () => ({
@@ -11,10 +12,10 @@ export const useProspectsStore = defineStore('prospects', {
     }),
 
     getters: {
+        // ... (Pas de changement ici)
         getProspectById: (state) => (id) =>
             state.prospects.find(p => p.id === id),
 
-        // 🔍 Recherche full-text sur firstname / lastname / email / tags
         filteredProspects: (state) => {
             if (!state.searchQuery.trim()) return state.prospects
 
@@ -24,12 +25,15 @@ export const useProspectsStore = defineStore('prospects', {
                 p.firstname.toLowerCase().includes(q) ||
                 p.lastname.toLowerCase().includes(q) ||
                 p.email.toLowerCase().includes(q) ||
+                // Note : Vérifiez si p.tags existe avant d'appeler toLowerCase()
                 (p.tags && p.tags.toLowerCase().includes(q))
             )
         }
     },
 
     actions: {
+        // ... (loadProspects et selectProspect inchangés)
+
         /** Charge les prospects depuis ton API */
         async loadProspects() {
             this.loading = true
@@ -65,19 +69,61 @@ export const useProspectsStore = defineStore('prospects', {
             this.selectedProspect = this.getProspectById(id)
         },
 
-        /** Crée un prospect côté Pinia (et pourra appeler ton API plus tard) */
-        createProspect(newData) {
-            const newProspect = {
-                ...newData,
-                id: Date.now(), // ID local temporaire (en attendant une vraie API)
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
+        /** Crée un prospect côté Pinia **et l'envoie à l'API** */
+        async createProspect(newData) {
+            this.loading = true
+            this.error = null
+
+            // 1. Préparation des données pour l'API
+            // On ne doit envoyer que les champs pertinents (ex: pas d'ID local temporaire)
+            const apiData = {
+                firstname: newData.firstname,
+                lastname: newData.lastname,
+                email: newData.email,
+                phone: newData.phone || null,
+                company_id: newData.company_id || null,
+                potential_value: newData.potential_value || 0,
+                source: newData.source || 'Manuel',
+                status_interaction: newData.status_interaction || 'Nouveau',
+                tags: newData.tags || ''
+                // L'API devrait gérer les champs last_score, created_at, updated_at
             }
 
-            this.prospects.push(newProspect)
+            try {
+                // 2. Appel de l'API pour créer le contact
+                const createdContact = await createContact(apiData)
 
-            return newProspect
+                // 3. Transformation du résultat de l'API pour l'état Pinia
+                const newProspect = {
+                    id: createdContact.id_contact, // Utilise l'ID retourné par l'API
+                    firstname: createdContact.firstname,
+                    lastname: createdContact.lastname,
+                    email: createdContact.email,
+                    phone: createdContact.phone,
+                    company_id: createdContact.company_id,
+                    last_score: createdContact.last_score,
+                    potential_value: createdContact.potential_value,
+                    source: createdContact.source,
+                    status_interaction: createdContact.status_interaction,
+                    tags: createdContact.tags,
+                    created_at: createdContact.created_at,
+                    updated_at: createdContact.updated_at
+                }
+
+                // 4. Mise à jour du store Pinia
+                this.prospects.push(newProspect)
+
+                return newProspect
+
+            } catch (err) {
+                this.error = err.message || 'Échec de la création du prospect via l\'API'
+                throw err // Permet au composant appelant de gérer l'erreur
+            } finally {
+                this.loading = false
+            }
         },
+
+        // ... (updateProspect et setSearchQuery inchangés)
 
         /** Modifie un prospect existant */
         updateProspect(id, updatedData) {

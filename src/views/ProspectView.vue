@@ -38,7 +38,7 @@ function goToDetail(id) {
           <tr>
             <th>Nom</th>
             <th>Entreprise</th>
-            <th>Secteur</th>
+            <th>Source</th>
             <th>Email</th>
             <th>Téléphone</th>
             <th>Score IA</th>
@@ -52,13 +52,13 @@ function goToDetail(id) {
               @click="goToDetail(p.id)"
               class="prospect-row"
           >
-            <td>{{ p.contact }}</td>
-            <td>{{ p.company }}</td>
-            <td>{{ p.sector }}</td>
+            <td>{{ p.lastname + p.firstname }}</td>
+            <td>{{ p.company_id }}</td>
+            <td>{{ p.source }}</td>
             <td>{{ p.email }}</td>
             <td>{{ p.phone }}</td>
-            <td><span class="score">{{ p.score }}</span></td>
-            <td>{{ p.lastInteraction }}</td>
+            <td><span class="score">{{ p.last_score }}</span></td>
+            <td>{{ p.updated_at }}</td>
           </tr>
         </tbody>
       </table>
