@@ -57,6 +57,17 @@ const store = useProspectsStore()
 
 const id = parseInt(route.params.id)
 const prospect = store.getProspectById(id)
+
+function scorer() {
+  agentAnalyze(prospect)
+    .then(response => {
+      // Mettre à jour le prospect avec les nouvelles données
+      console.log(response)
+    })
+    .catch(error => {
+      console.error('Erreur lors du scoring du prospect :', error)
+    })
+}
 </script>
 
 <style lang="scss" scoped>
