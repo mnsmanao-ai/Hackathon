@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import {computed, onMounted} from 'vue'
 import { useRoute } from 'vue-router'
 
 // Imports des layouts globaux
@@ -27,8 +27,14 @@ const layout = computed(() => {
 })
 
 import { getContacts } from '@/api/contacts.js';
+import {useProspectsStore} from "@/store/prospectsStore.js";
 console.log(getContacts);
 
+const store = useProspectsStore()
+
+onMounted(() => {
+  store.loadProspects()
+})
 </script>
 
 <style lang="scss">

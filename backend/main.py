@@ -65,7 +65,7 @@ def call_agent(message: str):
 # -----------------------------------
 # 1️⃣ GET CONTACT
 # -----------------------------------
-@app.get("/contact/<int:id_contact>")
+@app.get("/contacts/<int:id_contact>")
 def contact_get(id_contact):
     con = db()
     with con.cursor() as c:
@@ -84,7 +84,7 @@ def contact_get(id_contact):
         "scores": scores
     })
 
-@app.get("/contact")
+@app.get("/contacts")
 def contact_list():
     con = db()
     with con.cursor() as c:
