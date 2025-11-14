@@ -1,19 +1,19 @@
 from flask import Flask, request, jsonify
 import pymysql
-import os
-from flask_cors import CORS
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
 from flasgger import Swagger, swag_from
+from flask_cors import CORS
 
-from azure.ai.agents import AgentsClient
-from azure.core.credentials import AzureKeyCredential
 
 app = Flask(__name__)
-CORS(app)
-swagger = Swagger(app)
+
+CORS(app, resources={r"/*": {"origins": "https://h44c4wggso0wkksgosggs084.lucieblr.com"}})
+swagger = Swagger(app)  # 🔥 active Swagger UI
 
 
 # ----------------------------------------------------------
-# MYSQL
+# 🔌 MYSQL CONFIG
 # ----------------------------------------------------------
 def db():
     return pymysql.connect(
@@ -26,20 +26,15 @@ def db():
 
 
 # ----------------------------------------------------------
-# 🔐 CREDENTIALS
+# 🤖 AZURE AGENT
 # ----------------------------------------------------------
-credential = DefaultAzureCredential()
-
-client = AIProjectClient(
-    endpoint="https://aihackmetropole-resource.services.ai.azure.com",
-    credential=credential,
+project = AIProjectClient(
+    credential=DefaultAzureCredential(),
+    endpoint="https://gestionprospect1234567-resource.services.ai.azure.com/api/projects/Gestionprospect1234567"
 )
-
-project = client.get_project("AIHackmetropole")
 
 def call_agent(message: str):
     agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
-
     thread = project.agents.threads.create()
 
     project.agents.messages.create(
@@ -57,12 +52,15 @@ def call_agent(message: str):
         return {"error": run.last_error}
 
     messages = project.agents.messages.list(thread_id=thread.id)
+    result = None
 
     for msg in messages:
         if msg.text_messages:
-            return {"response": msg.text_messages[-1].text.value}
+            result = msg.text_messages[-1].text.value
 
-    return {"response": None}
+    return {"response": result}
+
+
 # ----------------------------------------------------------
 # 📌 USERS
 # ----------------------------------------------------------
@@ -253,12 +251,7 @@ def contact_create():
     "responses": {200: {"description": "Réponse IA"}}
 })
 def agent_analyze():
-    data = request.get_json(force=True, silent=True)
-
-    if not isinstance(data, dict):
-        return jsonify({"error": "Invalid JSON payload"}), 400
-
-    message = data.get("message")
+    message = request.json.get("message")
     return jsonify(call_agent(message))
 
 
