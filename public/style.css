@@ -1,0 +1,105 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.topbar {
+  background: #111827;
+  color: white;
+  padding: 16px 24px;
+}
+
+.topbar h1 {
+  margin: 0;
+}
+
+.topbar p {
+  margin: 4px 0 0;
+  opacity: 0.8;
+}
+
+.content {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+}
+
+.panel {
+  flex: 1;
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* Widget chat */
+
+#chat-widget {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 320px;
+  height: 420px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.18);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+#chat-header {
+  background: #111827;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+}
+
+#chat-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background: #f9fafb;
+}
+
+#chat-input-area {
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+}
+
+#chat-input {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  outline: none;
+  font-size: 14px;
+}
+
+#chat-send {
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+}
+
+/* Bouton rond en bas à droite */
+
+#chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  border: none;
+  background: #111827;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}

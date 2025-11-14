@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>CRM Burostock - Démo Hackathon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>CRM Burostock</h1>
+    <p>Démo avec assistant CRM intégré</p>
+  </header>
+
+  <main class="content">
+    <section class="panel">
+      <h2>Liste des clients (fictifs)</h2>
+      <ul>
+        <li>Société Dupont – PME – Bureaux</li>
+        <li>BuroTech – Grand compte – Informatique</li>
+      </ul>
+      <p style="margin-top: 10px; font-size: 0.9em;">
+        👉 Imagine ici ton vrai CRM (listes, fiches, formulaires…)
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Exemples de questions à poser au bot</h2>
+      <ul>
+        <li>Comment créer un devis ?</li>
+        <li>Comment créer un lead ?</li>
+        <li>Que faire après un appel client ?</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Widget de chat -->
+  <div id="chat-widget">
+    <div id="chat-header">Assistant CRM</div>
+    <div id="chat-body"></div>
+    <div id="chat-input-area">
+      <input id="chat-input" placeholder="Pose ta question sur le CRM..." />
+      <button id="chat-send">Envoyer</button>
+    </div>
+  </div>
+
+  <button id="chat-toggle">💬</button>
+
+  <script src="app.js"></script>
+</body>
+</html>

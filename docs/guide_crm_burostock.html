@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guide CRM Burostock</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 20px 32px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      opacity: 0.8;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+    }
+
+    .tagline {
+      margin-bottom: 20px;
+      font-size: 15px;
+      color: #4b5563;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      margin-top: 18px;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      margin-bottom: 6px;
+    }
+
+    .kpi {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .kpi span {
+      font-size: 12px;
+      background: #f9fafb;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .pill.hot {
+      background: #fee2e2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .pill.warm {
+      background: #fef3c7;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
+    .pill.cold {
+      background: #e0f2fe;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section > p {
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    .footer-note {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Guide d'utilisation du CRM Burostock</h1>
+    <p>Comprendre le Dashboard, les Prospects, le Pipeline et le Score IA.</p>
+  </header>
+
+  <main>
+    <p class="tagline">
+      Ce guide complète l'<strong>assistant CRM</strong> intégré dans l'application.  
+      Le bot répond aux questions rapides, ce document te donne une vue plus détaillée pour te former.
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Vue d'ensemble</h2>
+        <p>
+          Le CRM Burostock est organisé en plusieurs sections principales :
+        </p>
+        <ul>
+          <li><strong>Dashboard</strong> – vue d'ensemble de l'activité commerciale.</li>
+          <li><strong>Prospects</strong> – liste de tous les contacts à convertir.</li>
+          <li><strong>Pipeline</strong> – suivi des opportunités et des deals en cours.</li>
+          <li><strong>Analytics</strong> – métriques avancées (conversion, performance, etc.).</li>
+        </ul>
+        <p class="hint">
+          La barre de recherche en haut permet de retrouver rapidement un client ou un prospect par son nom.
+        </p>
+      </section>
+
+      <aside class="card">
+        <div class="badge">👓 À lire avec le bot</div>
+        <p style="font-size: 13px;">
+          Depuis le CRM, tu peux poser des questions au chatbot :
+        </p>
+        <ul style="font-size: 13px;">
+          <li>« Comment lire le tableau de bord ? »</li>
+          <li>« Comment ajouter un prospect ? »</li>
+          <li>« À quoi sert le Score IA ? »</li>
+          <li>« Comment utiliser le pipeline ? »</li>
+        </ul>
+        <p class="hint">
+          Le bot te donne la version courte. Ici tu as les explications complètes.
+        </p>
+      </aside>
+    </div>
+
+    <section class="card section">
+      <h2>1. Dashboard (Tableau de bord)</h2>
+      <p>
+        Le tableau de bord te donne une vision rapide de ta performance commerciale.
+      </p>
+      <h3>Indicateurs clés</h3>
+      <div class="kpi">
+        <span>Prospects actifs</span>
+        <span>Taux de conversion</span>
+        <span>Ventes mensuelles</span>
+        <span>Relances en attente</span>
+      </div>
+      <p class="hint">
+        Objectif : savoir en quelques secondes si l'activité est « sous contrôle » ou en retard.
+      </p>
+    </section>
+
+    <section class="card section">
+      <h2>2. Prospects & Score IA</h2>
+      <p>
+        L'écran <strong>Prospects</strong> affiche la liste de tous les contacts à suivre, avec des colonnes comme :
+      </p>
+      <ul>
+        <li><strong>Nom</strong>, <strong>Entreprise</strong>, <strong>Secteur</strong></li>
+        <li><strong>Email</strong>, <strong>Téléphone</strong></li>
+        <li><strong>Score IA</strong> – niveau de priorité.</li>
+        <li><strong>Dernière interaction</strong> – date du dernier contact.</li>
+      </ul>
+
+      <h3>Comprendre le Score IA</h3>
+      <p>Le Score IA permet de classer les prospects par priorité :</p>
+      <div>
+        <span class="pill hot">80–100 : Très chaud</span>
+        <span class="pill warm">50–79 : Tiède</span>
+        <span class="pill cold">0–49 : Froid</span>
+      </div>
+      <p class="hint">
+        Combine le <strong>Score IA</strong> et la <strong>Dernière interaction</strong> pour décider qui appeler
+        en premier.
+      </p>
+
+      <h3>Ajouter un prospect</h3>
+      <ul>
+        <li>Clique sur <strong>« Ajouter un prospect »</strong> dans la liste.</li>
+        <li>Renseigne au minimum : nom, entreprise, email ou téléphone.</li>
+        <li>Ajoute le <strong>secteur</strong> pour mieux segmenter ensuite.</li>
+      </ul>
+    </section>
+
+    <section class="card section">
+      <h2>3. Pipeline commercial</h2>
+      <p>
+        Le <strong>Pipeline</strong> montre où en sont tes opportunités dans le process de vente.
+      </p>
+      <p>Exemples d'étapes :</p>
+      <ul>
+        <li>Lead → Prospect qualifié → Devis envoyé → Négociation → Gagné / Perdu</li>
+      </ul>
+      <p class="hint">
+        Le but : toujours savoir combien de deals sont en cours, à quelle étape, et pour quel montant.
+      </p>
+    </section>
+
+    <section class="card section">
+      <h2>4. Bonnes pratiques d'utilisation</h2>
+      <ul>
+        <li><strong>Tout noter dans le CRM</strong> (pas d'infos perdues dans des fichiers perso).</li>
+        <li><strong>Mettre à jour après chaque appel / email / rendez-vous</strong>.</li>
+        <li>Utiliser le <strong>Score IA</strong> pour prioriser les relances.</li>
+        <li>Garder le <strong>pipeline</strong> à jour (Gagné / Perdu).</li>
+      </ul>
+      <p class="hint">
+        Plus les données sont propres, plus le Score IA et les Analytics seront utiles.
+      </p>
+    </section>
+
+    <p class="footer-note">
+      Ce guide fait partie du projet hackathon « CRM Burostock ».  
+      L'assistant dans l'application s'appuie sur ces règles pour t'aider au quotidien.
+    </p>
+  </main>
+</body>
+</html>
