@@ -35,15 +35,19 @@ from flask import request
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get("Authorization")
-        if not token:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
             return jsonify({"error": "Token manquant"}), 401
+
         try:
-            payload = jwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+            token = auth_header.split(" ")[1]  # "Bearer <token>"
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            kwargs['current_user_id'] = payload['user_id']  # On peut utiliser l'id utilisateur
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expiré"}), 401
         except jwt.InvalidTokenError:
             return jsonify({"error": "Token invalide"}), 401
+
         return f(*args, **kwargs)
     return decorated
 
@@ -155,6 +159,7 @@ def users_create():
 # 👥 CONTACTS (exemple complet)
 # ----------------------------------------------------------
 @app.get("/contacts")
+@token_required
 @swag_from({
     "summary": "Liste complète des contacts",
     "tags": ["Contacts"],

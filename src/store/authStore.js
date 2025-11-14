@@ -12,9 +12,24 @@ export const useAuthStore = defineStore('auth', {
     },
 
     actions: {
+        async register(firstname, lastname, email, password, phone) {
+            try {
+                const res = await fetch("https://jkgsgkgos8w0o4cwwoowg0go.lucieblr.com/users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ firstname, lastname, email, password, phone })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Erreur lors de l'inscription");
+                return { success: true };
+            } catch (err) {
+                return { success: false, message: err.message };
+            }
+        },
+
         async login(email, password) {
             try {
-                const res = await fetch("http://localhost:3307/login", {
+                const res = await fetch("https://jkgsgkgos8w0o4cwwoowg0go.lucieblr.com/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password })
@@ -28,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.setItem("user", JSON.stringify(data.user));
                 localStorage.setItem("token", data.token);
 
-                router.push("/dashboard"); // redirige après connexion
+                router.push("/dashboard");
                 return { success: true };
             } catch (err) {
                 return { success: false, message: err.message };
@@ -36,10 +51,13 @@ export const useAuthStore = defineStore('auth', {
         },
 
         logout() {
+            // Supprime les données utilisateur
             this.user = null;
             this.token = null;
             localStorage.removeItem("user");
             localStorage.removeItem("token");
+
+            // Redirige vers la page de login
             router.push("/auth/login");
         }
     }

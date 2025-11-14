@@ -1,17 +1,17 @@
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import DashboardView from '@/views/DashboardView.vue'
 import ProspectView from '@/views/ProspectView.vue'
 import LoginView from "@/views/LoginView.vue";
 import ProspectDetailView from "@/views/ProspectDetailView.vue";
-import { useAuthStore } from '@/store/authStore'
 import SupportView from "@/views/SupportView.vue";
+import { useAuthStore } from '@/store/authStore'
 
 const routes = [
     {
         path: '/auth',
-        meta : { layout: 'auth' },
+        meta: { layout: 'auth' },
         children: [
-            { path: 'login', component: LoginView, meta : { layout: 'auth', public: true } },
+            { path: 'login', component: LoginView, meta: { layout: 'auth', public: true } },
         ],
     },
     {
@@ -21,14 +21,24 @@ const routes = [
             { path: 'prospects', component: ProspectView },
             { path: 'support', component: SupportView },
             { path: 'prospects/:id', name: 'prospect-detail', component: ProspectDetailView, props: true }
-            // autres routes internes
         ],
     }
-]
+];
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes
-})
+});
 
-export default router
+// Navigation Guard pour protéger les routes
+router.beforeEach((to, from, next) => {
+    const auth = useAuthStore();
+    const isPublic = to.meta.public || false;
+
+    if (!isPublic && !auth.isAuthenticated) {
+        return next("/auth/login");
+    }
+    next();
+});
+
+export default router;

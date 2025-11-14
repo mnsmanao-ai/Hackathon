@@ -53,7 +53,7 @@
         </div>
         <div class="topbar__user">
           <!--<img class="avatar" src="/avatar.png" alt="User" />-->
-          <span class="username">Alex Martin</span>
+          <a class="username" @click="handleLogout">Se déconnecter</a>
         </div>
       </header>
 
@@ -77,6 +77,14 @@ function toggleSidebar(){
   } else {
     sidebar.style.display = 'flex'
   }
+}
+
+import { useAuthStore } from '@/store/authStore'
+
+const auth = useAuthStore()
+
+const handleLogout = () => {
+  auth.logout()
 }
 </script>
 
