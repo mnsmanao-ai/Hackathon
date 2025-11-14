@@ -3,9 +3,11 @@ import pymysql
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from flasgger import Swagger, swag_from
+from flask_cors import CORS
 
 app = Flask(__name__)
 
+CORS(app, resources={r"/*": {"origins": "https://h44c4wggso0wkksgosggs084.lucieblr.com"}})
 swagger = Swagger(app)  # 🔥 active Swagger UI
 
 

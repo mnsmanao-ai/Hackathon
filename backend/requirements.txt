@@ -3,3 +3,4 @@ pymysql
 azure-ai-projects
 azure-identity
 flasgger
+flask-cors
