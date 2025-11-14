@@ -50,21 +50,29 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProspectsStore } from '@/store/prospectsStore'
 
 import {agentAnalyze} from "@/api/agent.js";
-import {onMounted} from "vue";
+import { ref, onMounted } from "vue";
 
 const route = useRoute()
 const router = useRouter()
 const store = useProspectsStore()
 
 const id = parseInt(route.params.id)
-onMounted(() => {
-  const prospect = store.getProspectById(id)
-  if (!prospect) {
-    router.push('/prospects')
-  }
-})
+const prospect = ref(null);
 
-console.log(prospect)
+onMounted(async () => {
+  // Si les prospects ne sont pas encore chargés, charge-les
+  if (!store.prospects.length) {
+    await store.loadProspects();
+  }
+
+  // Récupère le prospect depuis le store
+  prospect.value = store.getProspectById(id);
+
+  // Si introuvable, redirige
+  if (!prospect.value) {
+    await router.push("/prospects");
+  }
+});
 
 function scorer() {
   agentAnalyze(prospect)

@@ -8,7 +8,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "https://h44c4wggso0wkksgosggs084.lucieblr.com"}})
+CORS(app)
 swagger = Swagger(app)  # 🔥 active Swagger UI
 
 
