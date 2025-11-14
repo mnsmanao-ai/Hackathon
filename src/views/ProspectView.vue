@@ -1,9 +1,9 @@
 <script setup>
-
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useProspectsStore } from '@/store/prospectsStore.js'
-import { getContacts } from '@/api/contacts.js';
+import { getContacts } from '@/api/contacts.js'
 
 const router = useRouter()
 const prospectsStore = useProspectsStore()
@@ -12,6 +12,32 @@ const { prospects } = storeToRefs(prospectsStore)
 function goToDetail(id) {
   prospectsStore.selectProspect(id)
   router.push(`/prospects/${id}`)
+}
+
+// --- Pagination ---
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+
+const totalPages = computed(() => {
+  return Math.ceil(prospects.value.length / itemsPerPage.value)
+})
+
+const paginatedProspects = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return prospects.value.slice(start, end)
+})
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+function prevPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
 }
 </script>
 
@@ -24,58 +50,54 @@ function goToDetail(id) {
       </div>
 
       <div class="prospects__cta">
-
-        <button class="btn btn__secondary">
-          Ajouter un prospect</button>
-        <button class="btn btn__primary" @click="getContacts">
-          Scorer</button>
+        <button class="btn btn__secondary">Ajouter un prospect</button>
+        <button class="btn btn__primary" @click="getContacts">Scorer</button>
       </div>
     </header>
 
     <div class="prospects__content">
       <table>
         <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Entreprise</th>
-            <th>Source</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>Score IA</th>
-            <th>Dernière interaction</th>
-          </tr>
+        <tr>
+          <th>Nom</th>
+          <th>Entreprise</th>
+          <th>Source</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Score IA</th>
+          <th>Dernière interaction</th>
+        </tr>
         </thead>
         <tbody>
-          <tr
-              v-for="p in prospects"
-              :key="p.id"
-              @click="goToDetail(p.id)"
-              class="prospect-row"
-          >
-            <td>{{ p.lastname + " " + p.firstname }}</td>
-            <td>{{ p.company_id }}</td>
-            <td>{{ p.source }}</td>
-            <td>{{ p.email }}</td>
-            <td>{{ p.phone }}</td>
-            <td><span class="score">{{ p.last_score }}</span></td>
-            <td>{{ p.updated_at }}</td>
-          </tr>
+        <tr
+            v-for="p in paginatedProspects"
+            :key="p.id"
+            @click="goToDetail(p.id)"
+            class="prospect-row"
+        >
+          <td>{{ p.lastname + " " + p.firstname }}</td>
+          <td>{{ p.company_id }}</td>
+          <td>{{ p.source }}</td>
+          <td>{{ p.email }}</td>
+          <td>{{ p.phone }}</td>
+          <td><span class="score">{{ p.last_score }}</span></td>
+          <td>{{ p.updated_at }}</td>
+        </tr>
         </tbody>
       </table>
-
-      <!-- Pagination could go here -->
     </div>
 
     <div class="prospects__footer">
-      <p>Affichage de 1 à 5 sur 50 prospects</p>
+      <p>Affichage de {{ (currentPage-1)*itemsPerPage + 1 }} à
+        {{ Math.min(currentPage*itemsPerPage, prospects.length) }} sur {{ prospects.length }} prospects</p>
       <div class="pagination">
-        <button class="btn btn__secondary">Précédent</button>
-        <button class="btn btn__secondary">Suivant</button>
+        <button class="btn btn__secondary" @click="prevPage" :disabled="currentPage === 1">Précédent</button>
+        <button class="btn btn__secondary" @click="nextPage" :disabled="currentPage === totalPages">Suivant</button>
       </div>
     </div>
   </div>
-
 </template>
+
 
 <style scoped lang="scss">
 @use '@/assets/styles/variables';

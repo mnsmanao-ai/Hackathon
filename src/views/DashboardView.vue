@@ -5,27 +5,27 @@
       <p>Vue d’ensemble de votre activité commerciale</p>
     </header>
 
-    <!-- cards principaux -->
+    <!-- Cards dynamiques -->
     <section class="cards">
       <div class="card">
         <div class="card__title">Prospects actifs</div>
-        <div class="card__value">324</div>
-        <div class="card__sub">+12% ce mois</div>
+        <div class="card__value">{{ prospectsActifs }}</div>
+        <div class="card__sub">{{ variationActifs }}</div>
       </div>
       <div class="card">
         <div class="card__title">Taux de conversion</div>
-        <div class="card__value">18.7%</div>
-        <div class="card__sub">+3 points</div>
+        <div class="card__value">{{ tauxConversion }}%</div>
+        <div class="card__sub">Basé sur last_score ≥ 50</div>
       </div>
       <div class="card">
         <div class="card__title">Ventes mensuelles</div>
-        <div class="card__value">142</div>
+        <div class="card__value">{{ ventesMensuelles }}</div>
         <div class="card__sub">Objectif : 150</div>
       </div>
       <div class="card">
         <div class="card__title">Relances en attente</div>
-        <div class="card__value">27</div>
-        <div class="card__sub">5 urgentes</div>
+        <div class="card__value">{{ relancesEnAttente }}</div>
+        <div class="card__sub">{{ relancesEnAttente ? relancesEnAttente + ' urgentes' : '' }}</div>
       </div>
     </section>
 
@@ -36,9 +36,8 @@
           <h3>Performance commerciale</h3>
           <span>Période : Octobre - Novembre 2025</span>
         </div>
-
         <div class="chart-placeholder">
-          <p>📊 Graphique à intégrer ici (API ou composant chart.js)</p>
+          <p>📊 Graphique à intégrer ici (Chart.js ou autre)</p>
         </div>
       </div>
 
@@ -49,21 +48,9 @@
           <span>Mises à jour automatiques</span>
         </div>
         <ul class="timeline">
-          <li>
-            <strong>Dupont SARL</strong> — Relance effectuée (email)
-            <span>il y a 2h</span>
-          </li>
-          <li>
-            <strong>Atelier Pro</strong> — Nouveau devis envoyé
-            <span>il y a 5h</span>
-          </li>
-          <li>
-            <strong>Immobat</strong> — Score IA mis à jour (+15)
-            <span>hier</span>
-          </li>
-          <li>
-            <strong>OfficeLine</strong> — Nouvelle fiche prospect
-            <span>hier</span>
+          <li v-for="activity in activitesRecentes" :key="activity.id_interaction">
+            <strong>{{ getCompany(activity.contact_id) }}</strong> — {{ activity.subject || 'Mise à jour' }}
+            <span>{{ formatDate(activity.date_interetaction) }}</span>
           </li>
         </ul>
       </div>
@@ -72,8 +59,59 @@
 </template>
 
 <script setup>
-// Future: importer composant chart.js ou data API ici
+import { computed, onMounted } from 'vue';
+import { useProspectsStore } from '@/store/prospectsStore';
+
+const store = useProspectsStore();
+
+// Charger les prospects si nécessaire
+onMounted(async () => {
+  if (!store.prospects.length) {
+    await store.loadProspects();
+  }
+});
+
+// Prospects actifs
+const prospectsActifs = computed(() => store.prospects.filter(p => p.status_interaction !== 'Client actif').length);
+const variationActifs = computed(() => '+12% ce mois'); // placeholder, tu peux calculer la vraie variation
+
+// Taux de conversion
+const tauxConversion = computed(() => {
+  const ventes = store.prospects.filter(p => p.last_score >= 50).length;
+  return store.prospects.length ? ((ventes / store.prospects.length) * 100).toFixed(1) : 0;
+});
+
+// Ventes mensuelles
+const ventesMensuelles = computed(() => {
+  const now = new Date();
+  return store.prospects.filter(p => {
+    const date = new Date(p.created_at);
+    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+  }).length;
+});
+
+// Relances en attente
+const relancesEnAttente = computed(() => store.prospects.filter(p => p.status_interaction === 'En attente').length);
+
+// Activités récentes (triées par date décroissante)
+const activitesRecentes = computed(() => {
+  const interactions = store.prospects.flatMap(p => p.interactions || []);
+  return interactions.sort((a, b) => new Date(b.date_interetaction) - new Date(a.date_interetaction)).slice(0, 5);
+});
+
+// Fonction utilitaire pour récupérer le nom de la société
+const getCompany = (id) => {
+  const p = store.prospects.find(p => p.id === id);
+  return p ? p.firstname + ' ' + p.lastname : 'Prospect inconnu';
+}
+
+// Formater la date
+const formatDate = (dateStr) => {
+  const d = new Date(dateStr);
+  return d.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+}
 </script>
+
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables';

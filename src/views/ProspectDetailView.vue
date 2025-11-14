@@ -2,8 +2,8 @@
   <section v-if="prospect" class="prospect-detail">
     <header class="prospect-detail__header">
       <div class="prospects__head">
-        <h2>{{ prospect.company_id }}</h2>
-        <p>Contact : {{ prospect.lastname + " " + prospect.firstname }} · Score : <strong>{{ prospect.score }}</strong></p>
+        <h2>{{ prospect.contact.company_id }}</h2>
+        <p>Contact : {{ prospect.contact.lastname + " " + prospect.contact.firstname }} · Score : <strong>{{ prospect.contact.last_score }}</strong></p>
       </div>
 
       <div class="prospects__cta">
@@ -15,18 +15,18 @@
     <div class="prospect-detail__grid">
       <div class="card">
         <h3>Informations</h3>
-        <p><strong>Email :</strong>   <a :href="`mailto:${prospect.email}`">{{ prospect.email }}</a></p>
-        <p><strong>Téléphone :</strong> {{ prospect.phone }}</p>
-        <p><strong>Source :</strong> {{ prospect.source }}</p>
-        <p><strong>Tags :</strong> {{ prospect.tags }}</p>
-        <p><strong>Status interaction :</strong> {{prospect.status_interaction}}</p>
+        <p><strong>Email :</strong>   <a :href="`mailto:${prospect.contact.email}`">{{ prospect.contact.email }}</a></p>
+        <p><strong>Téléphone :</strong> {{ prospect.contact.phone }}</p>
+        <p><strong>Source :</strong> {{ prospect.contact.source }}</p>
+        <p><strong>Tags :</strong> {{ prospect.contact.tags }}</p>
+        <p><strong>Status interaction :</strong> {{prospect.contact.status_interaction}}</p>
       </div>
 
       <div class="card">
         <h3>Historique</h3>
         <ul>
-          <li v-for="item in prospect.interactions" :key="item.contact_id">
-            <a>{{ item.channel }}</a>
+          <li v-for="item in store.selectedProspect.interactions" :key="item.contact_id">
+            <a>{{ item.channel }}</a><br />
             <strong>{{ item.date_interetaction }}</strong> — {{ item.subject }}
             <span v-if="item.content"> ({{ item.content }})</span>
           </li>
@@ -66,12 +66,20 @@ onMounted(async () => {
   }
 
   // Récupère le prospect depuis le store
-  prospect.value = store.getProspectById(id);
+  prospect.value = await store.selectProspect(id);
 
   // Si introuvable, redirige
   if (!prospect.value) {
     await router.push("/prospects");
   }
+
+  console.log(prospect);
+
+  store.selectedProspect = prospect.value;
+
+  console.log(store.selectedProspect);
+
+
 });
 
 function scorer() {
