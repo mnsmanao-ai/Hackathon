@@ -122,34 +122,18 @@ def users_get(id_user):
 
 
 @app.post("/users")
-@swag_from({
-    "summary": "Créer un utilisateur",
-    "tags": ["Users"],
-    "requestBody": {
-        "required": True,
-        "content": {
-            "application/json": {
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "firstname": {"type": "string"},
-                        "lastname": {"type": "string"},
-                        "email": {"type": "string"},
-                        "password_hash": {"type": "string"},
-                        "phone": {"type": "string"},
-                        "active": {"type": "boolean"}
-                    }
-                }
-            }
-        }
-    },
-    "responses": {200: {"description": "Utilisateur créé"}}
-})
 def users_create():
     data = request.json
     con = db()
 
-    hashed_password = generate_password_hash(data["password_hash"]).decode("utf-8")
+    # Vérifie que tous les champs requis sont présents
+    required_fields = ["firstname", "lastname", "email", "password", "phone"]
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"error": f"{field} manquant"}), 400
+
+    # Hash du mot de passe
+    hashed_password = generate_password_hash(data["password"]).decode("utf-8")
 
     with con.cursor() as c:
         c.execute("""
@@ -287,6 +271,9 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    if not email or not password:
+        return jsonify({"error": "Email ou mot de passe manquant"}), 400
+
     con = db()
     with con.cursor() as c:
         c.execute("SELECT * FROM users WHERE email=%s", (email,))
@@ -294,17 +281,26 @@ def login():
         if not user:
             return jsonify({"error": "Utilisateur non trouvé"}), 401
 
-        # Vérifie le hash du mot de passe
+        # Vérifie le mot de passe
         if not check_password_hash(user["password_hash"], password):
             return jsonify({"error": "Mot de passe incorrect"}), 401
 
-        # Génère un JWT
+        # Génère le JWT
         payload = {
             "user_id": user["id_user"],
             "exp": datetime.utcnow() + timedelta(hours=2)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-        return jsonify({"token": token, "user": {"id": user["id_user"], "firstname": user["firstname"], "lastname": user["lastname"], "email": user["email"]}})
+
+        return jsonify({
+            "token": token,
+            "user": {
+                "id": user["id_user"],
+                "firstname": user["firstname"],
+                "lastname": user["lastname"],
+                "email": user["email"]
+            }
+        })
 
 # ----------------------------------------------------------
 # 🏠 HOME
