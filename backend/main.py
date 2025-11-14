@@ -1,19 +1,21 @@
 from flask import Flask, request, jsonify
 import pymysql
-from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
-from flasgger import Swagger, swag_from
+import os
 from flask_cors import CORS
+from flasgger import Swagger, swag_from
+
+# Azure Agents
+from azure.ai.agents import AgentsClient
+from azure.core.credentials import AzureKeyCredential
 
 
 app = Flask(__name__)
-
 CORS(app)
-swagger = Swagger(app)  # 🔥 active Swagger UI
+swagger = Swagger(app)
 
 
 # ----------------------------------------------------------
-# 🔌 MYSQL CONFIG
+# MYSQL
 # ----------------------------------------------------------
 def db():
     return pymysql.connect(
@@ -26,17 +28,17 @@ def db():
 
 
 # ----------------------------------------------------------
-# 🤖 AZURE AGENT
+# AZURE AGENT
 # ----------------------------------------------------------
 api_key = os.getenv("AZURE_AI_API_KEY")
 
-
 client = AgentsClient(
-    endpoint="https://aihackmetropole-resource.services.ai.azure.com/api/projects/AIHackmetropole",
+    endpoint="https://aihackmetropole-resource.services.ai.azure.com/",
     credential=AzureKeyCredential(api_key)
 )
 
-project = client.projects.get_project("aihackmetropole")
+project = client.projects.get_project("AIHackmetropole")
+
 
 def call_agent(message: str):
     agent = project.agents.get_agent("asst_TAELII8aWgovcx7uJ72I9QCo")
@@ -57,14 +59,11 @@ def call_agent(message: str):
         return {"error": run.last_error}
 
     messages = project.agents.messages.list(thread_id=thread.id)
-    result = None
-
     for msg in messages:
         if msg.text_messages:
-            result = msg.text_messages[-1].text.value
+            return {"response": msg.text_messages[-1].text.value}
 
-    return {"response": result}
-
+    return {"response": None}
 
 # ----------------------------------------------------------
 # 📌 USERS
