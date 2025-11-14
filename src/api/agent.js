@@ -1,18 +1,16 @@
 const API_URL = 'https://jkgsgkgos8w0o4cwwoowg0go.lucieblr.com/agent/analyze';
 
-/** Appelle l'agent IA */
 export async function agentAnalyze(message) {
     const response = await fetch(API_URL, {
         method: "POST",
         headers: {
+            "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify("fait l'analyse du prospect dont les données sont :" + { message })
+        body: JSON.stringify({ message: "fait l'analyze du prospect dont les données sont : " + String(message) })
     });
 
-    if (!response.ok) {
-        throw new Error("Erreur API lors de l'appel à l'agent");
-    }
+    if (!response.ok) throw new Error("Erreur API");
 
     return await response.json();
 }

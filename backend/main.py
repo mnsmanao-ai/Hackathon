@@ -4,7 +4,7 @@ from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from flasgger import Swagger, swag_from
 from flask_cors import CORS
-    
+
 
 app = Flask(__name__)
 
@@ -251,7 +251,12 @@ def contact_create():
     "responses": {200: {"description": "Réponse IA"}}
 })
 def agent_analyze():
-    message = request.json.get("message")
+    data = request.get_json(force=True, silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    message = data.get("message")
     return jsonify(call_agent(message))
 
 
