@@ -165,7 +165,7 @@ def users_create():
     "tags": ["Contacts"],
     "responses": {200: {"description": "Liste des contacts"}}
 })
-def contacts_list():
+def contacts_list(current_user_id):
     con = db()
     with con.cursor() as c:
         c.execute("SELECT * FROM contacts")
