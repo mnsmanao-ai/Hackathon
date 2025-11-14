@@ -50,13 +50,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProspectsStore } from '@/store/prospectsStore'
 
 import {agentAnalyze} from "@/api/agent.js";
+import {onMounted} from "vue";
 
 const route = useRoute()
 const router = useRouter()
 const store = useProspectsStore()
 
 const id = parseInt(route.params.id)
-const prospect = store.getProspectById(id)
+onMounted(() => {
+  const prospect = store.getProspectById(id)
+  if (!prospect) {
+    router.push('/prospects')
+  }
+})
+
+console.log(prospect)
 
 function scorer() {
   agentAnalyze(prospect)
